@@ -1,8 +1,8 @@
 package com.multitap.payment.api.common.Exception;
 
 
-import com.multitab.category.cate.common.entity.BaseResponse;
-import com.multitab.category.cate.common.entity.BaseResponseStatus;
+import com.multitap.payment.api.common.entity.BaseResponse;
+import com.multitap.payment.api.common.entity.BaseResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

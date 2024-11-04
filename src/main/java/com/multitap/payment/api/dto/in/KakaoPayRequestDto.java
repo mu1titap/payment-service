@@ -1,5 +1,7 @@
 package com.multitap.payment.api.dto.in;
 
+import com.multitap.payment.api.common.utils.PartnerOrderCodeGenerator;
+import com.multitap.payment.api.domain.KakaoPay;
 import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -12,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoPayRequestDto {
-    private Long id;
 
     private String partnerOrderId;
 
@@ -28,15 +29,28 @@ public class KakaoPayRequestDto {
 
     private Integer taxFreeAmount;
 
-    private static KakaoPayRequestVo toVo(KakaoPayRequestDto requestDto) {
-        return KakaoPayRequestVo.builder()
-               .cid(requestDto.getCid())
-               .partnerUserId(requestDto.getPartnerUserId())
-               .itemName(requestDto.getItemName())
-               .quantity(requestDto.getQuantity())
-               .totalAmount(requestDto.getTotalAmount())
-               .taxFreeAmount(requestDto.getTaxFreeAmount())
-               .build();
+    public KakaoPay toEntity() {
+        return KakaoPay.builder()
+            .partnerOrderId(partnerOrderId)
+            .partnerUserId(partnerUserId)
+            .cid(cid)
+            .quantity(quantity)
+            .itemName(itemName)
+            .totalAmount(totalAmount)
+            .taxFreeAmount(taxFreeAmount)
+            .build();
+    }
+
+    public static KakaoPayRequestDto fromVo(KakaoPayRequestVo vo) {
+        return KakaoPayRequestDto.builder()
+           .partnerOrderId(PartnerOrderCodeGenerator.generateCategoryCode("PO-"))
+           .partnerUserId(vo.getPartnerUserId())
+           .cid(vo.getCid())
+           .quantity(vo.getQuantity())
+           .itemName(vo.getItemName())
+           .totalAmount(vo.getTotalAmount())
+           .taxFreeAmount(vo.getTaxFreeAmount())
+           .build();
     }
 
 
