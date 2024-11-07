@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### .yaml files ###
+src/main/resources/
+
+
+**/SwaggerConfig.class
+**/SwaggerConfig.java

@@ -18,6 +18,7 @@ public class PaymentController {
     @PostMapping("/ready")
     public void paymentReady(KakaoPayRequestVo vo){
         kakaoPayService.createKakaoPay(KakaoPayRequestDto.fromVo(vo));
+
     }
 
 }
