@@ -14,20 +14,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoPayRequestDto {
+    // ercloud 보고 작성한 거. => 맞게 수정 필요
+    private String cid;
 
     private String partnerOrderId;
 
     private String partnerUserId;
 
-    private String cid;
+    private String itemName;
 
     private Integer quantity;
-
-    private String itemName;
 
     private Integer totalAmount;
 
     private Integer taxFreeAmount;
+
+    private String approvalUrl;
+
+    private String failUrl;
+
+    private String cancelUrl;
 
     public KakaoPay toEntity() {
         return KakaoPay.builder()
@@ -50,6 +56,9 @@ public class KakaoPayRequestDto {
            .itemName(vo.getItemName())
            .totalAmount(vo.getTotalAmount())
            .taxFreeAmount(vo.getTaxFreeAmount())
+           .approvalUrl(vo.getApprovalUrl())
+           .failUrl(vo.getFailUrl())
+           .cancelUrl(vo.getCancelUrl())
            .build();
     }
 
