@@ -1,8 +1,8 @@
-package com.multitap.payment.api.common.Exception;
+package com.multitap.payment.common.Exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.multitap.payment.api.common.entity.BaseResponse;
-import com.multitap.payment.api.common.entity.BaseResponseStatus;
+import com.multitap.payment.common.entity.BaseResponse;
+import com.multitap.payment.common.entity.BaseResponseStatus;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

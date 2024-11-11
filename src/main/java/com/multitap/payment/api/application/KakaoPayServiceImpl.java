@@ -1,23 +1,21 @@
 package com.multitap.payment.api.application;
 
+import com.multitap.payment.common.Exception.BaseException;
+import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
+import com.multitap.payment.common.entity.BaseResponseStatus;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -38,8 +36,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     }
 
     @Override
-    public String kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto) {
-
+    public KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory()); // 정확한 에러 파악을 위해 생성
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -61,30 +58,60 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
         payParams.put("fail_url", kakaoPayRequestDto.getFailUrl());
         payParams.put("cancel_url", kakaoPayRequestDto.getCancelUrl());
 
-        log.info("payParams: {}" + payParams);
+        log.info("payParams : {}", payParams);
         HttpEntity<Map<String,String>> requestEntity = new HttpEntity<>(payParams,headers);
 
-
-
         String requestUrl = KAKAO_PAY_HOST_URL + "/online/v1/payment/ready";
-        KakaoPayResponseDto result = restTemplate.postForObject(
+        KakaoPayResponseDto kakaoPayResponseDto = restTemplate.postForObject(
             requestUrl,
             requestEntity,
             KakaoPayResponseDto.class
         );
 
-        log.info("result: {}" + result.getClass().getName());
-        log.info("result: {}" + result.getClass().getName());
+        log.info("ResponseDto : {}", kakaoPayResponseDto);
 
+        assert kakaoPayResponseDto != null : new BaseException(BaseResponseStatus.NO_KAKAOPAY_RESPONSE);
+        kakaoPayResponseDto.setPartnerOrderIdToResponse(kakaoPayRequestDto.getPartnerOrderId());
 
+        return kakaoPayResponseDto;
 
-        return result.getNext_redirect_pc_url();
+    }
 
+    @Override
+    public String kakaoPayApprove(
+        KakaoPayApproveRequestDto kakaoPayApproveRequestDto){
 
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "SECRET_KEY " + KAKAO_SECRET_KEY); // API key
+        headers.set("Content-Type", "application/json");
+        headers.set("Accept", "application/json");
 
+        Map<String, String> payParams = new HashMap<>();
+//        payParams.put("cid", kakaoPayApproveRequestDto.getCid());
+        payParams.put("cid", "TC0ONETIME");
+        payParams.put("tid", kakaoPayApproveRequestDto.getTid());
+        payParams.put("partner_order_id", kakaoPayApproveRequestDto.getPartnerOrderId());
+        payParams.put("partner_user_id", kakaoPayApproveRequestDto.getPartnerUserId());
+        payParams.put("pg_token", kakaoPayApproveRequestDto.getPgToken());
 
+        log.info("payParams: {}" + payParams);
+        HttpEntity<Map<String,String>> requestEntity = new HttpEntity<>(payParams,headers);
 
+        log.info("cid: {}" , payParams.get("cid"));
+
+        String requestUrl = KAKAO_PAY_HOST_URL + "/online/v1/payment/approve";
+        return restTemplate.postForObject(
+            requestUrl,
+            requestEntity,
+            String.class
+        );
+        
+        // todo dto로 바꾸기
+        // todo db 저장하기
 
 
     }
