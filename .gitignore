@@ -39,6 +39,7 @@ out/
 ### .yaml files ###
 src/main/resources/
 
+src/main/resources/application.yml
 
 **/SwaggerConfig.class
 **/SwaggerConfig.java
