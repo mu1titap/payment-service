@@ -37,7 +37,7 @@ jobs:
           mkdir -p ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
-          echo '${{ secrets.MENTORING_SERVICE_APPLICATION_YML }}' > ./application.yml
+          echo '${{ secrets.PAYMENT_SERVICE_APPLICATION_YML }}' > ./application.yml
         shell: bash
 
       # 권한추가
