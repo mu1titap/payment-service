@@ -7,6 +7,6 @@ import lombok.Getter;
 @Builder
 public class Amount {
     private Integer total;
-    private Integer taxFree;
+    private Integer tax_free;
 
 }

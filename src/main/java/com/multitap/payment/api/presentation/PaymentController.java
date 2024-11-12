@@ -29,23 +29,14 @@ public class PaymentController {
         return kakaoPayService.kakaoPayReady(kakaoPayRequestDto).toVo();
     }
 
-//    @PostMapping("/approve")
-//    public KakaoPayApproveResponseDto paymentApprove(@RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo){
-//
-//        // todo 요청 정보 DB 저장 => approve 후 저장히기
-////        kakaoPayService.createKakaoPay(kakaoPayRequestDto);
-//
-//        return kakaoPayService.kakaoPayApprove(KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo));
-//
-//    }
-
+    @Transactional
     @PostMapping("/approve")
-    public String paymentApprove(@RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo){
-
-        // todo 요청 정보 DB 저장 => approve 후 저장히기
-//        kakaoPayService.createKakaoPay(kakaoPayRequestDto);
-
-        return kakaoPayService.kakaoPayApprove(KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo));
+    public KakaoPayApproveResponseDto paymentApprove(@RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo){
+        KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
+            kakaoPayService.kakaoPayApprove(KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo));
+        // DB 저장
+        kakaoPayService.createKakaoPay(kakaoPayApproveResponseDto);
+        return kakaoPayApproveResponseDto;
 
     }
 

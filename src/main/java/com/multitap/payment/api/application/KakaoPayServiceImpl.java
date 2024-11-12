@@ -1,5 +1,6 @@
 package com.multitap.payment.api.application;
 
+import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
@@ -31,8 +32,8 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     private final String KAKAO_PAY_HOST_URL = "https://open-api.kakaopay.com";
 
     @Override
-    public void createKakaoPay(KakaoPayRequestDto kakaoPayRequestDto) {
-        kakaoPayRepository.save(kakaoPayRequestDto.toEntity());
+    public void createKakaoPay(KakaoPayApproveResponseDto kakaoPayApproveResponseDto) {
+        kakaoPayRepository.save(kakaoPayApproveResponseDto.toEntity());
     }
 
     @Override
@@ -78,7 +79,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     }
 
     @Override
-    public String kakaoPayApprove(
+    public KakaoPayApproveResponseDto kakaoPayApprove(
         KakaoPayApproveRequestDto kakaoPayApproveRequestDto){
 
         RestTemplate restTemplate = new RestTemplate();
@@ -104,14 +105,18 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
         log.info("cid: {}" , payParams.get("cid"));
 
         String requestUrl = KAKAO_PAY_HOST_URL + "/online/v1/payment/approve";
-        return restTemplate.postForObject(
+        KakaoPayApproveResponseDto kakaoPayApproveResponseDto = restTemplate.postForObject(
             requestUrl,
             requestEntity,
-            String.class
+            KakaoPayApproveResponseDto.class
         );
+        assert kakaoPayApproveResponseDto != null;
+        log.info("kakaoPayApproveResponse {}", kakaoPayApproveResponseDto.toString());
+        return kakaoPayApproveResponseDto;
         
         // todo dto로 바꾸기
         // todo db 저장하기
+        // todo method 화 => ctrl alt m 하기
 
 
     }

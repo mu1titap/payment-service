@@ -1,5 +1,6 @@
 package com.multitap.payment.api.dto.in;
 
+import com.multitap.payment.api.domain.KakaoPay;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +33,7 @@ public class KakaoPayApproveRequestDto {
             .pgToken(kakaoPayApproveRequestVo.getPgToken())
             .build();
     }
+
 
 
 }
