@@ -1,4 +1,4 @@
-package com.multitap.payment.api.common.entity;
+package com.multitap.payment.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,6 +59,8 @@ public enum BaseResponseStatus {
     // Interest (could be Global not found?)
     NO_EXIST_INTEREST(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 관심사입니다."),
 
+    // KakaoPay
+    NO_KAKAOPAY_RESPONSE(HttpStatus.NOT_FOUND, false, 404, "결제 요청 반환 값이 존재하지 않습니다."),
 
     // Shorts
     NO_EXIST_PRODUCT(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 상품입니다"),

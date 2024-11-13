@@ -1,4 +1,4 @@
-package com.multitap.payment.api.common.entity;
+package com.multitap.payment.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

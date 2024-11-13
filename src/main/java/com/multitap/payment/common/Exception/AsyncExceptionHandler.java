@@ -1,4 +1,4 @@
-package com.multitap.payment.api.common.Exception;
+package com.multitap.payment.common.Exception;
 
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
-package com.multitap.payment.api.common.entity;
+package com.multitap.payment.common.entity;
 
 
-import static com.multitap.payment.api.common.entity.BaseResponseStatus.SUCCESS;
+import static com.multitap.payment.common.entity.BaseResponseStatus.SUCCESS;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

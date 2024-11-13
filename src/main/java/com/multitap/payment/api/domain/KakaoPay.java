@@ -1,6 +1,6 @@
 package com.multitap.payment.api.domain;
 
-import com.multitap.payment.api.common.entity.BaseEntity;
+import com.multitap.payment.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Getter
@@ -26,19 +25,23 @@ public class KakaoPay extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    private String cid;
+    @Column(nullable = false)
     private String partnerOrderId;
     @Column(nullable = false)
     private String partnerUserId;
     @Column(nullable = false)
-    private String cid;
+    private String itemName;
     @Column(nullable = false)
     private Integer quantity;
-    @Column(nullable = false)
-    private String itemName;
     @Column(nullable = false)
     private Integer totalAmount;
     @Column(nullable = false)
     private Integer taxFreeAmount;
+    @Column(nullable = true)
+    private LocalDateTime createdAt;
+    @Column(nullable = true)
+    private LocalDateTime updatedAt;
 
 
 }

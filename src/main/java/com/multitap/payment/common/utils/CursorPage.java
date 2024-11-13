@@ -1,4 +1,4 @@
-package com.multitap.payment.api.common.utils;
+package com.multitap.payment.common.utils;
 
 import java.util.List;
 import lombok.Builder;

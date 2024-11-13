@@ -1,4 +1,4 @@
-package com.multitap.payment.api.common.utils;
+package com.multitap.payment.common.utils;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

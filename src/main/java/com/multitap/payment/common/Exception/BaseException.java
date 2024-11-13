@@ -1,8 +1,8 @@
-package com.multitap.payment.api.common.Exception;
+package com.multitap.payment.common.Exception;
 
 
 
-import com.multitap.payment.api.common.entity.BaseResponseStatus;
+import com.multitap.payment.common.entity.BaseResponseStatus;
 import lombok.Getter;
 
 @Getter
