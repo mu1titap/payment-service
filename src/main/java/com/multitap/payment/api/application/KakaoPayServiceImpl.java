@@ -32,6 +32,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     private final PaymentInfoRepository kakaoPayInfoRepository;
     private final MemberVoltAmountRepository memberVoltAmountRep;
 
+    private final PaymentService paymentService;
     @Value("${kakao.api.secret-key}")
     private String KAKAO_SECRET_KEY;
 
@@ -93,7 +94,6 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     }
 
     @Override
-    @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
         KakaoPayApproveRequestDto kakaoPayApproveRequestDto){
 
@@ -131,6 +131,19 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
 
     }
 
+    @Override
+    public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
+        // 승인 요청
+        KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
+            kakaoPayApprove(kakaoPayApproveRequestDto);
+        // DB 저장
+        createKakaoPay(kakaoPayApproveResponseDto);
+        // 회원 볼트 결제 내역
 
 
+
+//        paymentService.savePayment();
+
+
+    }
 }
