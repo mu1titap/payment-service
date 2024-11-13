@@ -37,8 +37,7 @@ jobs:
           mkdir -p ./src/main/resources
           cd ./src/main/resources
           touch ./application.yml
-          echo '${{ secrets.CATEGORY_SERVICE_APPLICATION_YML }}' > ./application.yml
-          echo '${{ secrets.KAKAO_SECRET_KEY }}' >> ./application.yml
+          echo '${{ secrets.PAYMENT_SERVICE_APPLICATION_YML }}' > ./application.yml
         shell: bash
 
       # 권한추가
@@ -49,11 +48,11 @@ jobs:
       - name: Spring Boot Build
         run: ./gradlew clean build -x test
 
+
         env:
           DB_HOST: ${{ secrets.EC2_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PWD: ${{ secrets.DB_PWD }}
-
 
       # DockerHub Login
       - name: docker login
@@ -65,8 +64,9 @@ jobs:
       # Docker 이미지 Build
       - name: docker image build & docker Hub push
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/category-service .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/category-service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/payment-service .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/payment-service
+
 
   deploy:
     runs-on: ubuntu-latest
@@ -81,7 +81,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            sudo docker stop ${{ secrets.CATEGORY_SERVICE_CONTAINER_NAME }}  # 컨테이너 중지
-            sudo docker rm -f ${{ secrets.CATEGORY_SERVICE_CONTAINER_NAME }}  # 컨테이너 제거
-            sudo docker rmi -f ${{ secrets.DOCKERHUB_USERNAME }}/category-service:latest  # 이미지 제거
-            sudo docker run -d --name ${{ secrets.CATEGORY_SERVICE_CONTAINER_NAME }} --network spring-cloud-network -p 9000:9000 ${{ secrets.DOCKERHUB_USERNAME }}/category-service:latest
+            sudo docker stop ${{ secrets.PAYMENT_SERVICE_CONTAINER_NAME }}  # 컨테이너 중지
+            sudo docker rm -f ${{ secrets.PAYMENT_SERVICE_CONTAINER_NAME }}  # 컨테이너 제거
+            sudo docker rmi -f ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest  # 이미지 제거
+            sudo docker run -d --name ${{ secrets.PAYMENT_SERVICE_CONTAINER_NAME }} --network spring-cloud-network -p 9900:9900 ${{ secrets.DOCKERHUB_USERNAME }}/payment-service:latest
+
