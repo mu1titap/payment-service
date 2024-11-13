@@ -1,6 +1,9 @@
 package com.multitap.payment.api.application;
 
+import com.multitap.payment.api.dto.in.PaymentInfoDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
+import com.multitap.payment.api.infrastructure.MemberVoltAmountRepository;
+import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -25,6 +29,8 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoPayServiceImpl implements KakaoPayService  {
 
     private final KakaoPayRepository kakaoPayRepository;
+    private final PaymentInfoRepository kakaoPayInfoRepository;
+    private final MemberVoltAmountRepository memberVoltAmountRep;
 
     @Value("${kakao.api.secret-key}")
     private String KAKAO_SECRET_KEY;
@@ -37,6 +43,14 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     }
 
     @Override
+    public void savePaymentInfo(PaymentInfoDto payInfoDto){
+
+
+    }
+
+
+    @Override
+    @Transactional
     public KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory()); // 정확한 에러 파악을 위해 생성
@@ -79,6 +93,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     }
 
     @Override
+    @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
         KakaoPayApproveRequestDto kakaoPayApproveRequestDto){
 
@@ -113,12 +128,9 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
         assert kakaoPayApproveResponseDto != null;
         log.info("kakaoPayApproveResponse {}", kakaoPayApproveResponseDto.toString());
         return kakaoPayApproveResponseDto;
-        
-        // todo dto로 바꾸기
-        // todo db 저장하기
-        // todo method 화 => ctrl alt m 하기
-
 
     }
+
+
 
 }
