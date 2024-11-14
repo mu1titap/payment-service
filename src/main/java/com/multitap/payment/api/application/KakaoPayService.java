@@ -1,12 +1,10 @@
 package com.multitap.payment.api.application;
 
-import com.multitap.payment.api.domain.KakaoPay;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
-import com.multitap.payment.api.dto.in.PaymentInfoDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.multitap.payment.api.vo.PaymentInfoVo;
 
 public interface KakaoPayService  {
     void createKakaoPay(KakaoPayApproveResponseDto kakaoPayResponseDto);
@@ -15,7 +13,7 @@ public interface KakaoPayService  {
 
     KakaoPayApproveResponseDto kakaoPayApprove(KakaoPayApproveRequestDto kakaoPayApproveRequestDto);
 
-    void savePaymentInfo(PaymentInfoDto paymentInfoDto);
+    void savePaymentInfo(PaymentInfoVo paymentInfoVo);
 
     void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto);
 

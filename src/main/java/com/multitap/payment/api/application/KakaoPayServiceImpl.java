@@ -1,9 +1,11 @@
 package com.multitap.payment.api.application;
 
+import com.multitap.payment.api.common.PaymentType;
 import com.multitap.payment.api.dto.in.PaymentInfoDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.infrastructure.MemberVoltAmountRepository;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
+import com.multitap.payment.api.vo.PaymentInfoVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
@@ -29,8 +31,10 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoPayServiceImpl implements KakaoPayService  {
 
     private final KakaoPayRepository kakaoPayRepository;
-    private final PaymentInfoRepository kakaoPayInfoRepository;
+    private final PaymentInfoRepository paymentInfoRepository;
     private final MemberVoltAmountRepository memberVoltAmountRep;
+
+
 
     private final PaymentService paymentService;
     @Value("${kakao.api.secret-key}")
@@ -44,7 +48,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     }
 
     @Override
-    public void savePaymentInfo(PaymentInfoDto payInfoDto){
+    public void savePaymentInfo(PaymentInfoVo paymentInfoVo){
 
 
     }
@@ -136,13 +140,36 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
         // 승인 요청
         KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
             kakaoPayApprove(kakaoPayApproveRequestDto);
-        // DB 저장
+        // 승인 정보 DB 저장
         createKakaoPay(kakaoPayApproveResponseDto);
         // 회원 볼트 결제 내역
+        // todo dto to vo 변경
+
+        // 결제 정보 저장
+        PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
+            .menteeUuid("menteeUuid") // TODO Uuid 데이터 받기
+            .volt(kakaoPayApproveResponseDto.getQuantity())
+            .type(PaymentType.KAKAO_PAY) // 다른 결제 type 생길 시 변경
+            .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
+            .build();
+        paymentInfoRepository.save(paymentInfoDto.toEntity());
+
+        // 1. kafka message 발행
+
+
+        // 2. kafka consumer 확인
+
+
+        // 3. 동기 처리로 묶기
+
+
+        // 4. @Transactional 묶어주기
+
+
+        // 5.
 
 
 
-//        paymentService.savePayment();
 
 
     }

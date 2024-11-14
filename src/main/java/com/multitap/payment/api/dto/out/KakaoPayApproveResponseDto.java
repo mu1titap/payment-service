@@ -3,10 +3,12 @@ package com.multitap.payment.api.dto.out;
 import com.multitap.payment.api.domain.KakaoPay;
 import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.ToString;
 
 @ToString
 @Builder
+@Getter
 public class KakaoPayApproveResponseDto {
     private String tid;
     private String cid;
