@@ -1,16 +1,17 @@
 package com.multitap.payment.api.application;
 
 import com.multitap.payment.api.common.PaymentType;
-import com.multitap.payment.api.dto.in.PaymentInfoDto;
-import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
-import com.multitap.payment.api.infrastructure.MemberVoltAmountRepository;
-import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.vo.PaymentInfoVo;
-import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
+import com.multitap.payment.api.dto.in.PaymentInfoDto;
+import com.multitap.payment.api.dto.in.UserReqDto;
+import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
+import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
+import com.multitap.payment.api.kafka.KafkaProducer;
+import com.multitap.payment.api.vo.PaymentInfoVo;
+import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +29,12 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class KakaoPayServiceImpl implements KakaoPayService  {
+public class KakaoPayServiceImpl implements KakaoPayService {
 
     private final KakaoPayRepository kakaoPayRepository;
     private final PaymentInfoRepository paymentInfoRepository;
-    private final MemberVoltAmountRepository memberVoltAmountRep;
-
+    private final KafkaProducer kafkaProducer;
+    private final UserServiceClient userServiceClient;
 
 
     private final PaymentService paymentService;
@@ -42,14 +43,14 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
 
     private final String KAKAO_PAY_HOST_URL = "https://open-api.kakaopay.com";
 
+
     @Override
     public void createKakaoPay(KakaoPayApproveResponseDto kakaoPayApproveResponseDto) {
         kakaoPayRepository.save(kakaoPayApproveResponseDto.toEntity());
     }
 
     @Override
-    public void savePaymentInfo(PaymentInfoVo paymentInfoVo){
-
+    public void savePaymentInfo(PaymentInfoVo paymentInfoVo) {
 
     }
 
@@ -58,7 +59,8 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
     @Transactional
     public KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory()); // 정확한 에러 파악을 위해 생성
+        restTemplate.setRequestFactory(
+            new HttpComponentsClientHttpRequestFactory()); // 정확한 에러 파악을 위해 생성
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 
         HttpHeaders headers = new HttpHeaders();
@@ -79,7 +81,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
         payParams.put("cancel_url", kakaoPayRequestDto.getCancelUrl());
 
         log.info("payParams : {}", payParams);
-        HttpEntity<Map<String,String>> requestEntity = new HttpEntity<>(payParams,headers);
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payParams, headers);
 
         String requestUrl = KAKAO_PAY_HOST_URL + "/online/v1/payment/ready";
         KakaoPayResponseDto kakaoPayResponseDto = restTemplate.postForObject(
@@ -90,7 +92,8 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
 
         log.info("ResponseDto : {}", kakaoPayResponseDto);
 
-        assert kakaoPayResponseDto != null : new BaseException(BaseResponseStatus.NO_KAKAOPAY_RESPONSE);
+        assert kakaoPayResponseDto != null : new BaseException(
+            BaseResponseStatus.NO_KAKAOPAY_RESPONSE);
         kakaoPayResponseDto.setPartnerOrderIdToResponse(kakaoPayRequestDto.getPartnerOrderId());
 
         return kakaoPayResponseDto;
@@ -99,7 +102,7 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
 
     @Override
     public KakaoPayApproveResponseDto kakaoPayApprove(
-        KakaoPayApproveRequestDto kakaoPayApproveRequestDto){
+        KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
@@ -119,9 +122,9 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
         payParams.put("pg_token", kakaoPayApproveRequestDto.getPgToken());
 
         log.info("payParams: {}" + payParams);
-        HttpEntity<Map<String,String>> requestEntity = new HttpEntity<>(payParams,headers);
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payParams, headers);
 
-        log.info("cid: {}" , payParams.get("cid"));
+        log.info("cid: {}", payParams.get("cid"));
 
         String requestUrl = KAKAO_PAY_HOST_URL + "/online/v1/payment/approve";
         KakaoPayApproveResponseDto kakaoPayApproveResponseDto = restTemplate.postForObject(
@@ -135,42 +138,49 @@ public class KakaoPayServiceImpl implements KakaoPayService  {
 
     }
 
+    @Transactional
     @Override
-    public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
-        // 승인 요청
-        KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
-            kakaoPayApprove(kakaoPayApproveRequestDto);
-        // 승인 정보 DB 저장
-        createKakaoPay(kakaoPayApproveResponseDto);
-        // 회원 볼트 결제 내역
-        // todo dto to vo 변경
+    public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
+        UserReqDto userReqDto) {
 
-        // 결제 정보 저장
-        PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
-            .menteeUuid("menteeUuid") // TODO Uuid 데이터 받기
-            .volt(kakaoPayApproveResponseDto.getQuantity())
-            .type(PaymentType.KAKAO_PAY) // 다른 결제 type 생길 시 변경
-            .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
-            .build();
-        paymentInfoRepository.save(paymentInfoDto.toEntity());
+        // 1. Feign Client : 유저 포인트 보유량 update
+        // 1.1 오류 발생 확인 시
+        if (userServiceClient.updatePoints(userReqDto)) {
+            throw new BaseException(BaseResponseStatus.POINT_UPDATE_FAILED);
+        }
 
-        // 1. kafka message 발행
+        log.info("Successfully point updated!");
 
+        try {
+            // 승인 요청
+            KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
+                kakaoPayApprove(kakaoPayApproveRequestDto);
+            // 승인 정보 DB 저장
+            createKakaoPay(kakaoPayApproveResponseDto);
+            // 회원 볼트 결제 내역
 
-        // 2. kafka consumer 확인
-
-
-        // 3. 동기 처리로 묶기
-
-
-        // 4. @Transactional 묶어주기
-
-
-        // 5.
-
-
-
+            // 결제 정보 저장
+            PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
+                .menteeUuid(userReqDto.getUserUuid())
+                .volt(kakaoPayApproveResponseDto.getQuantity())
+                .type(PaymentType.KAKAO_PAY) // 다른 결제 type 생길 시 변경
+                .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
+                .build();
+            paymentInfoRepository.save(paymentInfoDto.toEntity());
+        } catch (Exception e) { // 결제 정보 오류
+            log.error("Payment process error: {}", e.getMessage());
+            // 원래 상태로 돌리도록 요청
+            // 1.1 원래대로 되는지 확인
+            if (userServiceClient.restorePoints(userReqDto)) {
+                throw new BaseException(BaseResponseStatus.PAYMENT_PROCESS_ERROR);
+            }
+            // 1.2 오류 발생 시
+            // 관리자 통해 확인하도록
+            throw new BaseException(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+        }
 
 
     }
+
+
 }

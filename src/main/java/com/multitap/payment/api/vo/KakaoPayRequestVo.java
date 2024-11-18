@@ -1,14 +1,13 @@
 package com.multitap.payment.api.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
-@Builder
 public class KakaoPayRequestVo {
+
     @Schema(defaultValue = "TC0ONETIME")
     private String cid;
     private String partnerOrderId;

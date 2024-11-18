@@ -1,6 +1,6 @@
 package com.multitap.payment.api.kafka;
 
-import com.multitap.payment.api.dto.in.PaymentInfoDto;
+import com.multitap.payment.api.dto.in.UserReqDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -18,7 +18,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, PaymentInfoDto> categoryUpdateProducerFactory() {
+    public ProducerFactory<String, UserReqDto> categoryUpdateProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
             "localhost:29092,localhost:39092,localhost:49092");
@@ -28,7 +28,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, PaymentInfoDto> kafkaAddMentoringTemplate() {
+    public KafkaTemplate<String, UserReqDto> kafkaAddMentoringTemplate() {
         return new KafkaTemplate<>(categoryUpdateProducerFactory());
     }
 
