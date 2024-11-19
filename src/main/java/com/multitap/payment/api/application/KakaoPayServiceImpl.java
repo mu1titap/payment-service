@@ -138,14 +138,14 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
     }
 
+    // todo 원래대로 돌리는 코드 필요한지, transactional 충분한지. 작동원리
     @Transactional
     @Override
     public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
         UserReqDto userReqDto) {
 
         // 1. Feign Client : 유저 포인트 보유량 update
-        // 1.1 오류 발생 확인 시
-        if (userServiceClient.updatePoints(userReqDto)) {
+        if (userServiceClient.updatePoints(userReqDto).isSuccess()) { // 1.1 오류 발생 확인 시
             throw new BaseException(BaseResponseStatus.POINT_UPDATE_FAILED);
         }
 

@@ -3,7 +3,6 @@ package com.multitap.payment.common.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 // https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
 // following http status code standard from above
@@ -86,7 +85,7 @@ public enum BaseResponseStatus {
     CANNOT_SHARE(HttpStatus.BAD_REQUEST, false, 451, "공유할 수 없는 유저입니다."),
     ;
 
-    private final HttpStatusCode httpStatusCode;
+    private final HttpStatus httpStatusCode;
     private final boolean isSuccess;
     private final int code;
     private final String message;
