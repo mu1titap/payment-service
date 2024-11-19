@@ -138,7 +138,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
     }
 
-    // todo 원래대로 돌리는 코드 필요한지, transactional 충분한지. 작동원리
+    // todo  transactional 충분한지. 작동원리
     @Transactional
     @Override
     public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
@@ -167,6 +167,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
                 .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
                 .build();
             paymentInfoRepository.save(paymentInfoDto.toEntity());
+            log.info("Payment information saved successfully");
         } catch (Exception e) { // 결제 정보 오류
             log.error("Payment process error: {}", e.getMessage());
             // 원래 상태로 돌리도록 요청

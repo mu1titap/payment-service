@@ -8,6 +8,7 @@ import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import com.multitap.payment.api.vo.KakaoPayResponseVo;
+import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.ws.rs.QueryParam;
@@ -47,18 +48,16 @@ public class PaymentController {
             .build();
 
         // paymentProcess 에서 전부 처리하기
-        kakaoPayService.paymentProcess(
-            KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo), userReqDto);
-
-        // comment 예정
-        KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
-            kakaoPayService.kakaoPayApprove(
-                KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo));
-        // DB 저장
-        kakaoPayService.createKakaoPay(kakaoPayApproveResponseDto);
-        //
-
-        return new BaseResponse<>(kakaoPayApproveResponseDto);
+        try {
+            kakaoPayService.paymentProcess(
+                KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo), userReqDto);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        } catch (Exception e) {
+            log.error("paymentProcess error : {}", e.getMessage());
+            throw new RuntimeException("paymentProcess error");
+        }
+        return new BaseResponse<>();
 
     }
 
