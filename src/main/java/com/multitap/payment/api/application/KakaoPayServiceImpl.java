@@ -104,6 +104,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     public KakaoPayApproveResponseDto kakaoPayApprove(
         KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
 
+        log.info("start of kakaoPayApprove");
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
@@ -132,7 +133,9 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             requestEntity,
             KakaoPayApproveResponseDto.class
         );
-        assert kakaoPayApproveResponseDto != null;
+        if (kakaoPayApproveResponseDto == null) {
+            throw new AssertionError();
+        }
         log.info("kakaoPayApproveResponse {}", kakaoPayApproveResponseDto.toString());
         return kakaoPayApproveResponseDto;
 
@@ -143,6 +146,8 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     @Override
     public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
         UserReqDto userReqDto) {
+
+        log.info("start of paymentProcess");
 
         // 1. Feign Client : 유저 포인트 보유량 update
         if (userServiceClient.updatePoints(userReqDto).isSuccess() == false) { // 1.1 오류 발생 확인 시
@@ -173,6 +178,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             // 원래 상태로 돌리도록 요청
             // 1.1 원래대로 되는지 확인
             if (userServiceClient.restorePoints(userReqDto.changeSignOfPoint()).isSuccess()) {
+                log.info("restore succeeded");
                 throw new BaseException(BaseResponseStatus.PAYMENT_PROCESS_ERROR);
             }
             // 1.2 오류 발생 시

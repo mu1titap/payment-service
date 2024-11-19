@@ -11,12 +11,12 @@ import com.multitap.payment.api.vo.KakaoPayResponseVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.ws.rs.QueryParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,10 +38,12 @@ public class PaymentController {
     }
 
     @Operation(summary = "결제 승인 요청")
-    @PostMapping("/approve/uuid={uuid}")
+    @PostMapping("/approve")
     public BaseResponse<KakaoPayApproveResponseDto> paymentApprove(
-        @RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo,
-        @QueryParam("uuid") String memberuuid) {   // TODO check
+        @RequestParam("uuid") String memberuuid,
+        @RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo
+    ) {   // TODO check
+        log.info("start of payment approve");
         UserReqDto userReqDto = UserReqDto.builder()
             .userUuid(memberuuid)
             .pointQuantity(kakaoPayApproveRequestVo.getQuantity())
