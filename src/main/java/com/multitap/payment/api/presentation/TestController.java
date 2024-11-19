@@ -17,6 +17,7 @@ public class TestController {
 
     // ts statuscode , 트러블슈팅, jackson과의 호환성
     // ts 와일드카드
+    // 팀원 공유
     @PostMapping("/test")
     public BaseResponse<?> testPayment() {
         BaseResponse<Void> response =

@@ -145,7 +145,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         UserReqDto userReqDto) {
 
         // 1. Feign Client : 유저 포인트 보유량 update
-        if (userServiceClient.updatePoints(userReqDto).isSuccess()) { // 1.1 오류 발생 확인 시
+        if (userServiceClient.updatePoints(userReqDto).isSuccess() == false) { // 1.1 오류 발생 확인 시
             throw new BaseException(BaseResponseStatus.POINT_UPDATE_FAILED);
         }
 
@@ -171,12 +171,12 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             log.error("Payment process error: {}", e.getMessage());
             // 원래 상태로 돌리도록 요청
             // 1.1 원래대로 되는지 확인
-            if (userServiceClient.restorePoints(userReqDto)) {
+            if (userServiceClient.restorePoints(userReqDto.changeSignOfPoint()).isSuccess()) {
                 throw new BaseException(BaseResponseStatus.PAYMENT_PROCESS_ERROR);
             }
             // 1.2 오류 발생 시
             // 관리자 통해 확인하도록
-            throw new BaseException(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+            throw new BaseException(BaseResponseStatus.UNKNOWN_USER_POINT_RESTORE_ERROR);
         }
 
 

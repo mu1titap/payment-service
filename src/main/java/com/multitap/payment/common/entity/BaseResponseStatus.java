@@ -67,6 +67,7 @@ public enum BaseResponseStatus {
     PAYMENT_PROCESS_ERROR(HttpStatus.CONFLICT, false, 409, "결제 정보 처리를 실패하였습니다."),
     UNKNOWN_USER_POINT_RESTORE_ERROR(HttpStatus.CONFLICT, false, 409, "유저 포인트 정보 복구를 실패하였습니다."),
 
+
     // Shorts
     NO_EXIST_PRODUCT(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 상품입니다"),
     NO_EXIST_OPTION(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 옵션입니다"),

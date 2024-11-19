@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 // url : test
 public interface UserServiceClient {
 
-    @PostMapping("api/v1/member/points/update")
+    @PostMapping("api/v1/member/points/add")
         // to be corrected
     BaseResponse<Void> updatePoints(UserReqDto userReqDto);
 
-    @PostMapping("api/v1/member/points/restore")
-    Boolean restorePoints(UserReqDto userReqDto);    // 원래대로 돌리다
+    @PostMapping("api/v1/member/points/add")
+    BaseResponse<Void> restorePoints(UserReqDto userReqDto);    // 음수 값 줘서 원래대로 돌리다
 
 
 }

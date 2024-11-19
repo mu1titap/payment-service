@@ -13,4 +13,9 @@ public class UserReqDto {
 
     private String userUuid;
     private Integer pointQuantity;
+
+    public UserReqDto changeSignOfPoint() {
+        pointQuantity = -pointQuantity;
+        return this;
+    }
 }
