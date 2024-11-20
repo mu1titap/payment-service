@@ -9,7 +9,6 @@ import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.kafka.KafkaProducer;
 import com.multitap.payment.api.vo.PaymentInfoVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponseStatus;
@@ -33,11 +32,8 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
     private final KakaoPayRepository kakaoPayRepository;
     private final PaymentInfoRepository paymentInfoRepository;
-    private final KafkaProducer kafkaProducer;
     private final UserServiceClient userServiceClient;
 
-
-    private final PaymentService paymentService;
     @Value("${kakao.api.secret-key}")
     private String KAKAO_SECRET_KEY;
 
@@ -141,7 +137,6 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
     }
 
-    // todo  transactional 충분한지. 작동원리
     @Transactional
     @Override
     public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,

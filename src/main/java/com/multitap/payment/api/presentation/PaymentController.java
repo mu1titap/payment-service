@@ -60,7 +60,6 @@ public class PaymentController {
             throw new RuntimeException("paymentProcess error");
         }
         return new BaseResponse<>();
-
     }
 
 

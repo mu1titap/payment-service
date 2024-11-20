@@ -40,7 +40,8 @@ out/
 src/main/resources/
 src/main/resources/application.yml
 
-src/main/resources/application.yml
+### txt files ###
+*.txt
 
 
 #**/SwaggerConfig.class
