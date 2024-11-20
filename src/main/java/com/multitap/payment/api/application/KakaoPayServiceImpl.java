@@ -9,7 +9,7 @@ import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.vo.PaymentInfoVo;
+import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import java.util.HashMap;
@@ -34,6 +34,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     private final PaymentInfoRepository paymentInfoRepository;
     private final UserServiceClient userServiceClient;
 
+
     @Value("${kakao.api.secret-key}")
     private String KAKAO_SECRET_KEY;
 
@@ -41,18 +42,6 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
 
     @Override
-    public void createKakaoPay(KakaoPayApproveResponseDto kakaoPayApproveResponseDto) {
-        kakaoPayRepository.save(kakaoPayApproveResponseDto.toEntity());
-    }
-
-    @Override
-    public void savePaymentInfo(PaymentInfoVo paymentInfoVo) {
-
-    }
-
-
-    @Override
-    @Transactional
     public KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(
@@ -97,8 +86,10 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     }
 
     @Override
+    @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
-        KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
+        KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
+        String memberUuid) {
 
         log.info("start of kakaoPayApprove");
         RestTemplate restTemplate = new RestTemplate();
@@ -111,7 +102,6 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         headers.set("Accept", "application/json");
 
         Map<String, String> payParams = new HashMap<>();
-//        payParams.put("cid", kakaoPayApproveRequestDto.getCid());
         payParams.put("cid", "TC0ONETIME");
         payParams.put("tid", kakaoPayApproveRequestDto.getTid());
         payParams.put("partner_order_id", kakaoPayApproveRequestDto.getPartnerOrderId());
@@ -133,55 +123,30 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             throw new AssertionError();
         }
         log.info("kakaoPayApproveResponse {}", kakaoPayApproveResponseDto.toString());
+
+        // 결제 요청 저장
+        kakaoPayRepository.save(kakaoPayApproveResponseDto.toEntity());
+        PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
+            .menteeUuid(memberUuid)
+            .volt(kakaoPayApproveResponseDto.getQuantity())
+            .type(PaymentType.KAKAO_PAY) // 다른 결제 type 생길 시 변경
+            .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
+            .build();
+        paymentInfoRepository.save(paymentInfoDto.toEntity());
+        log.info("Payment information saved successfully");
+
         return kakaoPayApproveResponseDto;
 
     }
 
-    @Transactional
     @Override
-    public void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
-        UserReqDto userReqDto) {
-
-        log.info("start of paymentProcess");
-
-        // 1. Feign Client : 유저 포인트 보유량 update
-        if (userServiceClient.updatePoints(userReqDto).isSuccess() == false) { // 1.1 오류 발생 확인 시
-            throw new BaseException(BaseResponseStatus.POINT_UPDATE_FAILED);
-        }
-
+    public void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo) {
+        log.info("start of addPoint");
+        kakaoPayRepository.findByCid(kakaoPayApproveRequestVo.getCid()).orElseThrow(
+            () -> new BaseException(BaseResponseStatus.NO_KAKAOPAY_RESPONSE)
+        );
+        userServiceClient.updatePoints(userReqDto);
         log.info("Successfully point updated!");
-
-        try {
-            // 승인 요청
-            KakaoPayApproveResponseDto kakaoPayApproveResponseDto =
-                kakaoPayApprove(kakaoPayApproveRequestDto);
-            // 승인 정보 DB 저장
-            createKakaoPay(kakaoPayApproveResponseDto);
-            // 회원 볼트 결제 내역
-
-            // 결제 정보 저장
-            PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
-                .menteeUuid(userReqDto.getUserUuid())
-                .volt(kakaoPayApproveResponseDto.getQuantity())
-                .type(PaymentType.KAKAO_PAY) // 다른 결제 type 생길 시 변경
-                .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
-                .build();
-            paymentInfoRepository.save(paymentInfoDto.toEntity());
-            log.info("Payment information saved successfully");
-        } catch (Exception e) { // 결제 정보 오류
-            log.error("Payment process error: {}", e.getMessage());
-            // 원래 상태로 돌리도록 요청
-            // 1.1 원래대로 되는지 확인
-            if (userServiceClient.restorePoints(userReqDto.changeSignOfPoint()).isSuccess()) {
-                log.info("restore succeeded");
-                throw new BaseException(BaseResponseStatus.PAYMENT_PROCESS_ERROR);
-            }
-            // 1.2 오류 발생 시
-            // 관리자 통해 확인하도록
-            throw new BaseException(BaseResponseStatus.UNKNOWN_USER_POINT_RESTORE_ERROR);
-        }
-
-
     }
 
 

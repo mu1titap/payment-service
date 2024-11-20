@@ -5,17 +5,15 @@ import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
-import com.multitap.payment.api.vo.PaymentInfoVo;
+import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 
-public interface KakaoPayService  {
-    void createKakaoPay(KakaoPayApproveResponseDto kakaoPayResponseDto);
+public interface KakaoPayService {
 
     KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto);
 
-    KakaoPayApproveResponseDto kakaoPayApprove(KakaoPayApproveRequestDto kakaoPayApproveRequestDto);
+    KakaoPayApproveResponseDto kakaoPayApprove(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
+        String memeberUuid);
 
-    void savePaymentInfo(PaymentInfoVo paymentInfoVo);
 
-    void paymentProcess(KakaoPayApproveRequestDto kakaoPayApproveRequestDto, UserReqDto userReqDto);
-
+    void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo);
 }
