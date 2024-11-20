@@ -2,12 +2,19 @@ package com.multitap.payment.api.dto.out;
 
 import com.multitap.payment.api.domain.KakaoPay;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString
 @Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class KakaoPayApproveResponseDto {
+
     private String tid;
     private String cid;
     private String partner_order_id;
@@ -20,7 +27,7 @@ public class KakaoPayApproveResponseDto {
     private LocalDateTime updated_at;
 
 
-    public KakaoPay toEntity(){
+    public KakaoPay toEntity() {
         return KakaoPay.builder()
             .cid(cid)
             .partnerOrderId(partner_order_id)

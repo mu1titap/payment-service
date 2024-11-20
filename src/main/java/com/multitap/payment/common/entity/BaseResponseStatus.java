@@ -3,7 +3,6 @@ package com.multitap.payment.common.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 // https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
 // following http status code standard from above
@@ -52,6 +51,7 @@ public enum BaseResponseStatus {
     SAME_NICKNAME(HttpStatus.CONFLICT, false, 409, "현재 사용중인 닉네임입니다."),
     INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST, false, 400, "이메일을 다시 확인해주세요."),
 
+
     // Category
     NO_EXIST_CATEGORY(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 카테고리입니다."),
     DUPLICATED_CATEGORY_NAME(HttpStatus.CONFLICT, false, 409, "이미 존재하는 카테고리 이름입니다."),
@@ -61,6 +61,12 @@ public enum BaseResponseStatus {
 
     // KakaoPay
     NO_KAKAOPAY_RESPONSE(HttpStatus.NOT_FOUND, false, 404, "결제 요청 반환 값이 존재하지 않습니다."),
+
+    // payemnt
+    POINT_UPDATE_FAILED(HttpStatus.CONFLICT, false, 409, "포인트 보유량 업데이트에 실패하였습니다."),
+    PAYMENT_PROCESS_ERROR(HttpStatus.CONFLICT, false, 409, "결제 정보 처리를 실패하였습니다."),
+    UNKNOWN_USER_POINT_RESTORE_ERROR(HttpStatus.CONFLICT, false, 409, "유저 포인트 정보 복구를 실패하였습니다."),
+
 
     // Shorts
     NO_EXIST_PRODUCT(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 상품입니다"),
@@ -80,7 +86,7 @@ public enum BaseResponseStatus {
     CANNOT_SHARE(HttpStatus.BAD_REQUEST, false, 451, "공유할 수 없는 유저입니다."),
     ;
 
-    private final HttpStatusCode httpStatusCode;
+    private final HttpStatus httpStatusCode;
     private final boolean isSuccess;
     private final int code;
     private final String message;
