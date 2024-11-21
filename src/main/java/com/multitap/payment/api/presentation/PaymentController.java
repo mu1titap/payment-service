@@ -1,13 +1,16 @@
 package com.multitap.payment.api.presentation;
 
 import com.multitap.payment.api.application.KakaoPayService;
+import com.multitap.payment.api.application.SessionPaymentService;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
+import com.multitap.payment.api.dto.in.SessionPaymentDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import com.multitap.payment.api.vo.KakaoPayResponseVo;
+import com.multitap.payment.api.vo.SessionPaymentVo;
 import com.multitap.payment.common.entity.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     private final KakaoPayService kakaoPayService;
+    private final SessionPaymentService sessionPaymentService;
 
     @PostMapping("/ready")
     @Operation(summary = "결제 준비 요청", tags = "카카오페이 결제")
@@ -61,6 +65,23 @@ public class PaymentController {
             .build();
 
         kakaoPayService.addPoint(userReqDto, kakaoPayApproveRequestVo);
+        return new BaseResponse<>();
+    }
+
+    @Operation(summary = "세션 결제", tags = "세션 결제")
+    @PostMapping("/session")
+    public BaseResponse<Void> paymentSession(
+        @RequestParam("sessionUuid") String sessionUuid,
+        @RequestBody SessionPaymentVo sessionPaymentVo
+    ) {
+
+        // 1. 멤버 보유량 확인
+        // 2. 보유량 부족 시 부족 안내
+        // 3. 세션 결제 -> 보유량 감소
+        // 4. 회원 볼트 내역 추가
+        log.info("start of paymentSession");
+        sessionPaymentService.paySession(SessionPaymentDto.from(sessionPaymentVo));
+
         return new BaseResponse<>();
     }
 

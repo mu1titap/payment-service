@@ -21,11 +21,11 @@ public class BaseExceptionHandler {
         BaseResponse<Void> response = new BaseResponse<>(e.getStatus());
         log.error("BaseException -> {}({})", e.getStatus(), e.getStatus().getMessage(), e);
         return new ResponseEntity<>(response, response.httpStatus());
+
     }
 
     /**
-     * security 인증 에러
-     * 아이디가 없거나 비밀번호가 틀린 경우 AuthenticationManager 에서 발생
+     * security 인증 에러 아이디가 없거나 비밀번호가 틀린 경우 AuthenticationManager 에서 발생
      *
      * @return FAILED_TO_LOGIN 에러 response
      */
@@ -42,7 +42,8 @@ public class BaseExceptionHandler {
     }
 
     @ExceptionHandler
-    protected ResponseEntity<BaseResponse<Void>> handleInterruptedException(InterruptedException e) {
+    protected ResponseEntity<BaseResponse<Void>> handleInterruptedException(
+        InterruptedException e) {
         BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.REDIS_ERROR);
         log.error("InterruptedException from Redis: ", e);
         for (StackTraceElement s : e.getStackTrace()) {
