@@ -80,6 +80,8 @@ public class PaymentController {
         // 3. 세션 결제 -> 보유량 감소
         // 4. 회원 볼트 내역 추가
         log.info("start of paymentSession");
+        log.info("sessionUuid {}", sessionUuid);
+        log.info("sessionPaymentVo: {}", sessionPaymentVo.toString());
         sessionPaymentService.paySession(SessionPaymentDto.from(sessionPaymentVo));
 
         return new BaseResponse<>();
