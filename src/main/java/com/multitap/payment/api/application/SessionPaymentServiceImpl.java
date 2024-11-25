@@ -1,6 +1,7 @@
 package com.multitap.payment.api.application;
 
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
+import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +17,18 @@ public class SessionPaymentServiceImpl implements SessionPaymentService {
 
     @Override
     public void paySession(SessionPaymentDto sessionPaymentDto) {
-        // todo error handling
-        log.info("userUuid in sessionPaymentImpl : {}", sessionPaymentDto.getUserUuid());
-        userServiceClient.usePoints(sessionPaymentDto.getUserUuid(),
+        log.info("userUuid in sessionPaymentImpl : {}", sessionPaymentDto.getMenteeUuid());
+        // mentee point 사용
+        userServiceClient.usePoints(sessionPaymentDto.getMenteeUuid(),
             sessionPaymentDto.getVolt());
         log.info("here in paySession try");
 
+        // mentor point 증가
+        UserReqDto userReqDto = UserReqDto.builder()
+            .userUuid(sessionPaymentDto.getMentorUuid())
+            .pointQuantity(sessionPaymentDto.getVolt())
+            .build();
+        userServiceClient.addPoints(userReqDto);
         // 결제 정보 저장
         log.info("sessionPaymentDto : {}", sessionPaymentDto.toString());
         voltHistoryRepository.save(sessionPaymentDto.toEntity());

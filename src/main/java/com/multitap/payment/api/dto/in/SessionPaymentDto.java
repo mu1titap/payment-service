@@ -13,14 +13,16 @@ import lombok.ToString;
 public class SessionPaymentDto {
 
     private String sessionUuid;
-    private String userUuid;
+    private String menteeUuid;
+    private String mentorUuid;
     private Integer volt;
 
 
     public static SessionPaymentDto from(SessionPaymentVo sessionPaymentVo) {
         return SessionPaymentDto.builder()
             .sessionUuid(sessionPaymentVo.getSessionUuid())
-            .userUuid(sessionPaymentVo.getUserUuid())
+            .menteeUuid(sessionPaymentVo.getMenteeUuid())
+            .mentorUuid(sessionPaymentVo.getMentorUuid())
             .volt(sessionPaymentVo.getVolt())
             .build();
     }
@@ -28,7 +30,7 @@ public class SessionPaymentDto {
     public VoltHistory toEntity() {
         return VoltHistory.builder()
             .sessionUuid(sessionUuid)
-            .userUuid(userUuid)
+            .menteeUuid(menteeUuid)
             .volt(volt)
             .build();
 

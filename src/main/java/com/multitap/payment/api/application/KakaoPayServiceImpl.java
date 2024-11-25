@@ -145,7 +145,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         if (!kakaoPayRepository.existsByCid(kakaoPayApproveRequestVo.getCid())) {
             throw new BaseException(BaseResponseStatus.NO_KAKOPAY_PAYMENT);
         } // 중복 결제 방지. kakoPay 결제 확인 시 만 결제하도록
-        userServiceClient.updatePoints(userReqDto);
+        userServiceClient.addPoints(userReqDto);
         log.info("Successfully point updated!");
     }
 

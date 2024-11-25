@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserServiceClient {
 
     @PutMapping("api/v1/member/points/add")
-    BaseResponse<Void> updatePoints(@RequestBody UserReqDto userReqDto);
-
-    @PutMapping("api/v1/member/points/add")
-    BaseResponse<Void> restorePoints(@RequestBody UserReqDto userReqDto);    // 음수 값 줘서 원래대로 돌리다
+    BaseResponse<Void> addPoints(@RequestBody UserReqDto userReqDto);
 
     @PutMapping("api/v1/member/points/use")
     BaseResponse<Object> usePoints(@RequestParam("userUuid") String userUuid,
