@@ -141,10 +141,10 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
     @Override
     public void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo) {
-        log.info("start of addPoint");
-        kakaoPayRepository.findByCid(kakaoPayApproveRequestVo.getCid()).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_KAKAOPAY_RESPONSE)
-        );
+        log.info("start of addPoint at serviceImpl");
+        if (!kakaoPayRepository.existsByCid(kakaoPayApproveRequestVo.getCid())) {
+            throw new BaseException(BaseResponseStatus.NO_KAKOPAY_PAYMENT);
+        } // 중복 결제 방지. kakoPay 결제 확인 시 만 결제하도록
         userServiceClient.updatePoints(userReqDto);
         log.info("Successfully point updated!");
     }

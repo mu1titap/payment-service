@@ -52,13 +52,14 @@ public class PaymentController {
         return new BaseResponse<>();
     }
 
-    @Operation(summary = "포인트 증가 요청", tags = "포인트")
+    @Operation(summary = "포인트 증가 요청", tags = "포인트",
+        description = "카카오페이 결제 정보 확인 후 포인트 증가 요청합니다. <br>  cid 값으로 확인하며 기본 cid 값은 TC0ONETIME 입니다.")
     @PostMapping("/point/add")
     public BaseResponse<Void> addPoint(
         @RequestParam("uuid") String memberuuid,
         @RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo
     ) {
-        log.info("start of addPoint");
+        log.info("start of addPoint at controller");
         UserReqDto userReqDto = UserReqDto.builder()
             .userUuid(memberuuid)
             .pointQuantity(kakaoPayApproveRequestVo.getQuantity())
@@ -76,7 +77,7 @@ public class PaymentController {
     ) {
 
         // payment -> mentoring
-        
+
         // 1. 멤버 보유량 확인
         // 2. 보유량 부족 시 부족 안내
         // 3. 세션 결제 -> 보유량 감소

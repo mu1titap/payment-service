@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface KakaoPayRepository extends JpaRepository<KakaoPay, Long> {
 
     Optional<KakaoPay> findByCid(String cid);
+
+    boolean existsByCid(String cid);
 }
