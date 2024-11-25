@@ -34,6 +34,7 @@ public class TestDecoderConfig {
         if (HttpStatus.BAD_REQUEST.value() == response.status()) {
             log.info("here in decode if statement");
             return new BaseException(BaseResponseStatus.NOT_ENOUGH_POINT);
+
         } else {
             return new Exception("실패 사유를 모르는 실패");
         }

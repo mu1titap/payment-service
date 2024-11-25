@@ -16,18 +16,8 @@ public class SessionPaymentServiceImpl implements SessionPaymentService {
 
     @Override
     public void paySession(SessionPaymentDto sessionPaymentDto) {
-//        try {
-//            userServiceClient.usePoints(sessionPaymentDto.getUserUuid(),
-//                sessionPaymentDto.getPointPrice());
-//            log.info("here in paySession try");
-//        } catch (Exception e) {
-//
-//            log.info("error in paySession e :   {}", e);
-////            log.info("error in paySession e :   {}", e.getMessage());
-//        }
-
         // todo error handling
-        log.info("start of paysession");
+        log.info("userUuid in sessionPaymentImpl : {}", sessionPaymentDto.getUserUuid());
         userServiceClient.usePoints(sessionPaymentDto.getUserUuid(),
             sessionPaymentDto.getVolt());
         log.info("here in paySession try");
