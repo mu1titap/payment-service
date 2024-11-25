@@ -8,7 +8,7 @@ import lombok.ToString;
 public class SessionPaymentVo {
 
     private String sessionUuid;
-    private String menteeUuid;
+    private String userUuid;
     private Integer volt;
 
 }
