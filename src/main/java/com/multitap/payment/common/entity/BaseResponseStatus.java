@@ -61,11 +61,12 @@ public enum BaseResponseStatus {
 
     // KakaoPay
     NO_KAKAOPAY_RESPONSE(HttpStatus.NOT_FOUND, false, 404, "결제 요청 반환 값이 존재하지 않습니다."),
-
+    NO_KAKOPAY_PAYMENT(HttpStatus.NOT_FOUND, false, 404, "결제 정보가 존재하지 않습니다."),
     // payemnt
     POINT_UPDATE_FAILED(HttpStatus.CONFLICT, false, 409, "포인트 보유량 업데이트에 실패하였습니다."),
     PAYMENT_PROCESS_ERROR(HttpStatus.CONFLICT, false, 409, "결제 정보 처리를 실패하였습니다."),
     UNKNOWN_USER_POINT_RESTORE_ERROR(HttpStatus.CONFLICT, false, 409, "유저 포인트 정보 복구를 실패하였습니다."),
+    NOT_ENOUGH_POINT(HttpStatus.BAD_REQUEST, false, 3006, "보유 포인트가 부족합니다."),
 
 
     // Shorts
