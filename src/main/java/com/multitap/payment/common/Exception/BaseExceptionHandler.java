@@ -1,7 +1,6 @@
 package com.multitap.payment.common.Exception;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import feign.FeignException;
@@ -22,11 +21,11 @@ public class BaseExceptionHandler {
     protected ResponseEntity<BaseResponse<Void>> handleFeignException(FeignException e) {
         BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.DISALLOWED_ACTION);
         log.error("FeignException: {}", e.getMessage());
-        int firstIndex = e.getMessage().lastIndexOf("message\":") + 1;
-        int lastIndex = e.getMessage().lastIndexOf(",\"code") + 1 - 5;
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        log.error("substring feignException: {} ", e.getMessage().substring(firstIndex, lastIndex));
+//        int firstIndex = e.getMessage().lastIndexOf("message\":") + 1;
+//        int lastIndex = e.getMessage().lastIndexOf(",\"code") + 1 - 5;
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        log.error("substring feignException: {} ", e.getMessage().substring(firstIndex, lastIndex));
         log.info("Response: {}", response.message());
         return new ResponseEntity<>(response, response.httpStatus());
     }
