@@ -3,6 +3,7 @@ package com.multitap.payment.common.Exception;
 
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class BaseExceptionHandler {
+
+    /**
+     * Feign Client 호출 시 발생하는 예외 처리
+     */
+
+    @ExceptionHandler(FeignException.class)
+    protected ResponseEntity<BaseResponse<Void>> handleFeignException(FeignException e) {
+        BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.DISALLOWED_ACTION);
+        log.error("FeignException: {}", e.getMessage());
+        log.info("Response: {}", response.message());
+        return new ResponseEntity<>(response, response.httpStatus());
+    }
+
 
     /**
      * 발생한 예외 처리

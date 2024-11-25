@@ -75,6 +75,8 @@ public class PaymentController {
         @RequestBody SessionPaymentVo sessionPaymentVo
     ) {
 
+        // payment -> mentoring
+        
         // 1. 멤버 보유량 확인
         // 2. 보유량 부족 시 부족 안내
         // 3. 세션 결제 -> 보유량 감소

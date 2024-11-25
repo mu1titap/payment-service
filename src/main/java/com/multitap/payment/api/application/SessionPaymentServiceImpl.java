@@ -27,10 +27,12 @@ public class SessionPaymentServiceImpl implements SessionPaymentService {
 //        }
 
         // todo error handling
-//        userServiceClient.usePoints(sessionPaymentDto.getMenteeUuid(),
-//            sessionPaymentDto.getVolt());
-//        log.info("here in paySession try");
+        log.info("error handling");
+        userServiceClient.usePoints(sessionPaymentDto.getMenteeUuid(),
+            sessionPaymentDto.getVolt());
+        log.info("here in paySession try");
 
+        // 결제 정보 저장
         log.info("sessionPaymentDto : {}", sessionPaymentDto.toString());
         voltHistoryRepository.save(sessionPaymentDto.toEntity());
 
