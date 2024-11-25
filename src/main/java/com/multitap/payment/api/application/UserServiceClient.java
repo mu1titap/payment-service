@@ -18,7 +18,7 @@ public interface UserServiceClient {
     BaseResponse<Void> addPoints(@RequestBody UserReqDto userReqDto);
 
     @PutMapping("api/v1/member/points/use")
-    BaseResponse<Object> usePoints(@RequestParam("userUuid") String userUuid,
+    BaseResponse<Boolean> usePoints(@RequestParam("userUuid") String userUuid,
         @RequestParam("pointPrice") Integer pointPrice);
 
 }
