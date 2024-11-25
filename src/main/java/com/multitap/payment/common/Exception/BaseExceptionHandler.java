@@ -30,7 +30,6 @@ public class BaseExceptionHandler {
         return new ResponseEntity<>(response, response.httpStatus());
     }
 
-
     /**
      * 발생한 예외 처리
      */
@@ -49,16 +48,17 @@ public class BaseExceptionHandler {
      * @return FAILED_TO_LOGIN 에러 response
      */
 
-//    @ExceptionHandler(RuntimeException.class)
-//    protected ResponseEntity<BaseResponse<Void>> RuntimeError(RuntimeException e) {
-//        BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.INTERNAL_SERVER_ERROR);
-//        log.error("RuntimeException: {} ", e.getMessage());
-//        log.info("RuntimeException {}", e.toString());
-////        for (StackTraceElement s : e.getStackTrace()) {
-////            System.out.println(s);
-////        }
-//        return new ResponseEntity<>(response, response.httpStatus());
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<BaseResponse<Void>> RuntimeError(RuntimeException e) {
+        BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+        log.error("RuntimeException: {} ", e.getMessage());
+        log.info("RuntimeException {}", e.toString());
+//        for (StackTraceElement s : e.getStackTrace()) {
+//            System.out.println(s);
+//        }
+        return new ResponseEntity<>(response, response.httpStatus());
+    }
+
     @ExceptionHandler
     protected ResponseEntity<BaseResponse<Void>> handleInterruptedException(
         InterruptedException e) {

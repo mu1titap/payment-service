@@ -32,9 +32,12 @@ public class TestDecoderConfig {
         // todo 보편적으로 처리할 수 있도록 if 분기처리
         // json화 해서 메시지 확인 or code 확인 해서
         if (HttpStatus.BAD_REQUEST.value() == response.status()) {
-            log.info("here in decode if statement");
+            log.info("here in TestDecodeConfig if statement");
             return new BaseException(BaseResponseStatus.NOT_ENOUGH_POINT);
 
+        } else if (HttpStatus.NOT_FOUND.value() == response.status()) {
+            log.info("here in TestDecodeConfig if statement");
+            return new BaseException(BaseResponseStatus.NO_EXIST_USER);
         } else {
             return new Exception("실패 사유를 모르는 실패");
         }
