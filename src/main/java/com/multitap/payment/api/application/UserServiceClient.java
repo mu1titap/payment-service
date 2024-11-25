@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Service
-@FeignClient(name = "user-service", url = "http://localhost:3929", configuration = TestDecoderConfig.class)
+@FeignClient(name = "user-service", configuration = TestDecoderConfig.class)
 public interface UserServiceClient {
 
     @PutMapping("api/v1/member/points/add")
