@@ -1,6 +1,7 @@
 package com.multitap.payment.common.Exception;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import feign.FeignException;
@@ -21,6 +22,11 @@ public class BaseExceptionHandler {
     protected ResponseEntity<BaseResponse<Void>> handleFeignException(FeignException e) {
         BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.DISALLOWED_ACTION);
         log.error("FeignException: {}", e.getMessage());
+        int firstIndex = e.getMessage().lastIndexOf("message\":") + 1;
+        int lastIndex = e.getMessage().lastIndexOf(",\"code") + 1 - 5;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        log.error("substring feignException: {} ", e.getMessage().substring(firstIndex, lastIndex));
         log.info("Response: {}", response.message());
         return new ResponseEntity<>(response, response.httpStatus());
     }
@@ -44,17 +50,16 @@ public class BaseExceptionHandler {
      * @return FAILED_TO_LOGIN 에러 response
      */
 
-
-    @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<BaseResponse<Void>> RuntimeError(RuntimeException e) {
-        BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.INTERNAL_SERVER_ERROR);
-        log.error("RuntimeException: ", e);
-        for (StackTraceElement s : e.getStackTrace()) {
-            System.out.println(s);
-        }
-        return new ResponseEntity<>(response, response.httpStatus());
-    }
-
+//    @ExceptionHandler(RuntimeException.class)
+//    protected ResponseEntity<BaseResponse<Void>> RuntimeError(RuntimeException e) {
+//        BaseResponse<Void> response = new BaseResponse<>(BaseResponseStatus.INTERNAL_SERVER_ERROR);
+//        log.error("RuntimeException: {} ", e.getMessage());
+//        log.info("RuntimeException {}", e.toString());
+////        for (StackTraceElement s : e.getStackTrace()) {
+////            System.out.println(s);
+////        }
+//        return new ResponseEntity<>(response, response.httpStatus());
+//    }
     @ExceptionHandler
     protected ResponseEntity<BaseResponse<Void>> handleInterruptedException(
         InterruptedException e) {

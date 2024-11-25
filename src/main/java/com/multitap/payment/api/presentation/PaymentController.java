@@ -72,7 +72,6 @@ public class PaymentController {
     @Operation(summary = "세션 결제", tags = "세션 결제")
     @PostMapping("/session")
     public BaseResponse<Void> paymentSession(
-        @RequestParam("sessionUuid") String sessionUuid,
         @RequestBody SessionPaymentVo sessionPaymentVo
     ) {
 
@@ -83,7 +82,6 @@ public class PaymentController {
         // 3. 세션 결제 -> 보유량 감소
         // 4. 회원 볼트 내역 추가
         log.info("start of paymentSession");
-        log.info("sessionUuid {}", sessionUuid);
         log.info("sessionPaymentVo: {}", sessionPaymentVo.toString());
         sessionPaymentService.paySession(SessionPaymentDto.from(sessionPaymentVo));
 

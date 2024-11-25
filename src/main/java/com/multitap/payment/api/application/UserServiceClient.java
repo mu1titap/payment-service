@@ -1,6 +1,6 @@
 package com.multitap.payment.api.application;
 
-import com.multitap.payment.api.common.config.UserServiceClientConfig;
+import com.multitap.payment.api.common.config.TestDecoderConfig;
 import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.common.entity.BaseResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Service
-@FeignClient(name = "user-service", url = "http://localhost:3929", configuration = UserServiceClientConfig.class)
+@FeignClient(name = "user-service", url = "http://localhost:3929", configuration = TestDecoderConfig.class)
 public interface UserServiceClient {
 
     @PutMapping("api/v1/member/points/add")

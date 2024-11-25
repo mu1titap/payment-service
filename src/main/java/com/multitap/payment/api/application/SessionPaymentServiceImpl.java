@@ -27,7 +27,7 @@ public class SessionPaymentServiceImpl implements SessionPaymentService {
 //        }
 
         // todo error handling
-        log.info("error handling");
+        log.info("start of paysession");
         userServiceClient.usePoints(sessionPaymentDto.getMenteeUuid(),
             sessionPaymentDto.getVolt());
         log.info("here in paySession try");
