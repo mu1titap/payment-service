@@ -20,7 +20,7 @@ public class VoltHistory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 50)
-    private String userUuid;
+    private String menteeUuid;
     @Column(length = 50)
     private String sessionUuid;
     @Column(name = "volt")

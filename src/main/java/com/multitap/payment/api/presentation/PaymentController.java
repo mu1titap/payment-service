@@ -2,16 +2,20 @@ package com.multitap.payment.api.presentation;
 
 import com.multitap.payment.api.application.KakaoPayService;
 import com.multitap.payment.api.application.SessionPaymentService;
+import com.multitap.payment.api.application.SettlePointsService;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
+import com.multitap.payment.api.dto.in.SettlePointsDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import com.multitap.payment.api.vo.KakaoPayResponseVo;
 import com.multitap.payment.api.vo.SessionPaymentVo;
+import com.multitap.payment.api.vo.SettlePointsVo;
 import com.multitap.payment.common.entity.BaseResponse;
+import com.multitap.payment.common.entity.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +33,7 @@ public class PaymentController {
 
     private final KakaoPayService kakaoPayService;
     private final SessionPaymentService sessionPaymentService;
+    private final SettlePointsService settlePointsService;
 
     @PostMapping("/ready")
     @Operation(summary = "결제 준비 요청", tags = "카카오페이 결제")
@@ -52,7 +57,7 @@ public class PaymentController {
         return new BaseResponse<>();
     }
 
-    @Operation(summary = "포인트 증가 요청", tags = "포인트",
+    @Operation(summary = "카카오페이 결제 정보 확인 후 포인트 증가 요청", tags = "포인트",
         description = "카카오페이 결제 정보 확인 후 포인트 증가 요청합니다. <br>  cid 값으로 확인하며 기본 cid 값은 TC0ONETIME 입니다.")
     @PostMapping("/point/add")
     public BaseResponse<Void> addPoint(
@@ -69,22 +74,29 @@ public class PaymentController {
         return new BaseResponse<>();
     }
 
-    @Operation(summary = "세션 결제", tags = "세션 결제")
+    @Operation(summary = "세션 결제", tags = "세션 결제", description = "멘티의 포인트 보유량은 감소하고 <br>"
+        + "멘토의 포인트 보유량은 증가합니다.")
     @PostMapping("/session")
     public BaseResponse<Void> paymentSession(
         @RequestBody SessionPaymentVo sessionPaymentVo
     ) {
-
-        // payment -> mentoring
-
-        // 1. 멤버 보유량 확인
-        // 2. 보유량 부족 시 부족 안내
-        // 3. 세션 결제 -> 보유량 감소
-        // 4. 회원 볼트 내역 추가
         log.info("start of paymentSession");
         log.info("sessionPaymentVo: {}", sessionPaymentVo.toString());
         sessionPaymentService.paySession(SessionPaymentDto.from(sessionPaymentVo));
 
+        return new BaseResponse<>();
+    }
+
+    @Operation(summary = "포인트 정산", tags = "포인트 정산", description = "포인트 정산을 진행합니다.")
+    @PostMapping("/settle")
+    public BaseResponse<Void> settlePoints(
+        @RequestBody SettlePointsVo settlePointVo
+    ) {
+        log.info("start of settlePoints");
+
+        if (!settlePointsService.settlePoints(SettlePointsDto.of(settlePointVo))) {
+            return new BaseResponse<>(BaseResponseStatus.POINT_UPDATE_FAILED);
+        }
         return new BaseResponse<>();
     }
 
