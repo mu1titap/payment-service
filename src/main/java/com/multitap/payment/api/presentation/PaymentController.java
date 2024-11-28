@@ -3,17 +3,17 @@ package com.multitap.payment.api.presentation;
 import com.multitap.payment.api.application.KakaoPayService;
 import com.multitap.payment.api.application.SessionPaymentService;
 import com.multitap.payment.api.application.SettlePointsService;
+import com.multitap.payment.api.dto.in.ExchangePointsDto;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
-import com.multitap.payment.api.dto.in.SettlePointsDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
+import com.multitap.payment.api.vo.ExchangePointsVo;
 import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
 import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import com.multitap.payment.api.vo.KakaoPayResponseVo;
 import com.multitap.payment.api.vo.SessionPaymentVo;
-import com.multitap.payment.api.vo.SettlePointsVo;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,14 +87,21 @@ public class PaymentController {
         return new BaseResponse<>();
     }
 
-    @Operation(summary = "포인트 정산", tags = "포인트 정산", description = "포인트 정산을 진행합니다.")
+    @Operation(summary = "포인트 정산", tags = "포인트 정산", description = "포인트 정산을 진행합니다. <br>"
+        + "<bankCode> <br>"
+        + "KOREA_SC : SC 은행 <br>"
+        + "KOREA_SHINHAN : 신한은행 <br>"
+        + "KOREA_KB : KB은행 <br>"
+        + "KOREA_HANA : 하나은행 <br>"
+        + "KOREA_IBK : IBK 은행 <br>"
+        + "KOREA_NH_BANK : 농협은행")
     @PostMapping("/settle")
     public BaseResponse<Void> settlePoints(
-        @RequestBody SettlePointsVo settlePointVo
+        @RequestBody ExchangePointsVo settlePointVo
     ) {
         log.info("start of settlePoints");
 
-        if (!settlePointsService.settlePoints(SettlePointsDto.of(settlePointVo))) {
+        if (!settlePointsService.settlePoints(ExchangePointsDto.of(settlePointVo))) {
             return new BaseResponse<>(BaseResponseStatus.POINT_UPDATE_FAILED);
         }
         return new BaseResponse<>();
