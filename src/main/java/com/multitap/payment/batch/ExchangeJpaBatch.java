@@ -1,10 +1,9 @@
 package com.multitap.payment.batch;
 
 import com.multitap.payment.api.domain.Exchange;
+import com.multitap.payment.api.domain.ExchangeStatus;
 import com.multitap.payment.api.infrastructure.ExchangeRepository;
-import com.multitap.payment.batch.entity.ExchangeLog;
-import com.multitap.payment.batch.entity.ExchangeLogStatus;
-import com.multitap.payment.batch.repository.ExchangeLogRepository;
+import com.multitap.payment.batch.dto.ExchangeBatchDto;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,14 +25,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @RequiredArgsConstructor
 public class ExchangeJpaBatch {
-    // make thing to do mendatory
 
     // jpa vs jdbc => 실행시간 비교
 
     // category kafka 되는지
 
     // mongodb 연결
-    
+
 
     // jpa repo vs crudrepo
     // empty method to implement later
@@ -49,7 +47,6 @@ public class ExchangeJpaBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final ExchangeRepository exchangeRepository;
-    private final ExchangeLogRepository exchangeLogRepository;
 
     @Bean
     public Job exchangeJpaJob() {
@@ -62,8 +59,9 @@ public class ExchangeJpaBatch {
     @Bean
     public Step exchangeJpaStep() {
         return new StepBuilder("exchangeJpaStep", jobRepository)
-            .<Exchange, Exchange>chunk(2, platformTransactionManager)
+            .<Exchange, ExchangeBatchDto>chunk(2, platformTransactionManager)
             .reader(exchangeJpaReader())
+            .processor(exchangeProcessor())
             .writer(exchangeJpaWriter())
             .allowStartIfComplete(true) // 중복 실행 허용
             .build();
@@ -81,20 +79,29 @@ public class ExchangeJpaBatch {
     }
 
     @Bean
-    public ItemProcessor<Exchange, Exchange> exchangeProcessor() {
+    public ItemProcessor<Exchange, ExchangeBatchDto> exchangeProcessor() {
         // TODO send money to user
-        return ExchangeBatchDto -> ExchangeBatchDto;
+
+        return exchange -> {
+            return ExchangeBatchDto.builder()
+                .id(exchange.getId())
+                .mentorUuid(exchange.getMentorUuid())
+                .volt(exchange.getVolt())
+                .account(exchange.getAccount())
+                .status(exchange.getStatus())
+                .bankCode(exchange.getBankCode())
+                .build();
+        };
+
     }
 
     @Bean
-    public ItemWriter<Exchange> exchangeJpaWriter() {
+    public ItemWriter<? super ExchangeBatchDto> exchangeJpaWriter() {
         return items -> {
-            for (Exchange exchange : items) {
+            for (ExchangeBatchDto exchange : items) {
                 log.info("exchange in itemWriter : {}", exchange.toString());
-                exchangeLogRepository.save(ExchangeLog.builder()
-                    .exchangeId(exchange.getId())   // 중복 실행 되었을 때의 저장 문제?
-                    .status(ExchangeLogStatus.SUCCESS)
-                    .build());
+                // status 변경
+                exchangeRepository.save(exchange.toEntity(ExchangeStatus.COMPLETED));
             }
         };
     }

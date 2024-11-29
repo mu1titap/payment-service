@@ -2,7 +2,6 @@ package com.multitap.payment.api.dto.in;
 
 import com.multitap.payment.api.domain.BankCode;
 import com.multitap.payment.api.domain.Exchange;
-import com.multitap.payment.api.domain.ExchangeStatus;
 import com.multitap.payment.api.vo.ExchangePointsVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +36,6 @@ public class ExchangePointsDto {
             .volt(points)
             .account(account)
             .bankCode(bankCode)
-            .status(ExchangeStatus.PENDING)
             .build();
     }
 

@@ -2,6 +2,8 @@ package com.multitap.payment.api.domain;
 
 import com.multitap.payment.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,7 +27,9 @@ public class Exchange extends BaseEntity {
     private String mentorUuid;
     private Integer volt;
     private String account;
+    @Enumerated(EnumType.STRING)
     private ExchangeStatus status;
+    @Enumerated(EnumType.STRING)
     private BankCode bankCode;
 
 

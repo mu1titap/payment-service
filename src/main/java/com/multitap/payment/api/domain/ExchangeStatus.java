@@ -1,9 +1,10 @@
 package com.multitap.payment.api.domain;
 
 public enum ExchangeStatus {
-    PENDING("대기중"),
-    APPROVED("승인됨"),
-    REJECTED("거절됨");
+    PROCEEDING("진행중"),
+    COMPLETED("진행완료"),
+    FAILED("실패");
+
 
     private final String status;
 
