@@ -14,11 +14,18 @@ import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import com.multitap.payment.api.vo.KakaoPayResponseVo;
 import com.multitap.payment.api.vo.SessionPaymentVo;
 import com.multitap.payment.api.vo.SettlePointsVo;
+import com.multitap.payment.api.vo.ViewInfoModel;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -124,6 +131,24 @@ public class PaymentController {
         // todo : 2차 인증 번호 확인
 
         return new BaseResponse<>();
+    }
+
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    @PostMapping("/redisTest")
+    public ResponseEntity<?> addRedisKey(@RequestBody ViewInfoModel vo) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        log.info("vo: {}", vo.toString());
+        valueOperations.set(vo.getCallId(), vo.getOpenedAt());
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/redisTest/{key}")
+    public ResponseEntity<?> getRedisKey(@PathVariable("key") String key) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(key);
+        return new ResponseEntity<>(value, HttpStatus.OK);
     }
 
 
