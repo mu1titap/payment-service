@@ -151,5 +151,12 @@ public class PaymentController {
         return new ResponseEntity<>(value, HttpStatus.OK);
     }
 
+    @GetMapping("/redisTest/check/{key}")
+    public ResponseEntity<Boolean> checkRandNum(@RequestParam("phoneNumber") String phoneNumber,
+        @RequestParam("insertedNumber") String insertedNumber) {
+        return new ResponseEntity<>(
+            settlePointsService.checkRandomNumber(phoneNumber, insertedNumber), HttpStatus.OK);
+    }
+
 
 }
