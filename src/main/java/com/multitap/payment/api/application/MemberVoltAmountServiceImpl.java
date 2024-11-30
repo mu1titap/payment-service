@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class MemberVoltAmountServiceImpl implements MemberVoltAmountService{
+public class MemberVoltAmountServiceImpl implements MemberVoltAmountService {
 
     private final MemberVoltAmountRepository memberVoltAmountRepository;
+
 
     @Override
     public void saveMemberVoltAmount(MemberVoltAmountDto memberVoltAmountDto) {
