@@ -122,4 +122,22 @@ public class PaymentController {
     }
 
 
+    private final RedisTemplate<String, String> redisTemplate;
+
+    @PostMapping("/redisTest")
+    public ResponseEntity<?> addRedisKey(@RequestBody ViewInfoModel vo) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        log.info("vo: {}", vo.toString());
+        valueOperations.set(vo.getCallId(), vo.getOpenedAt());
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/redisTest/{key}")
+    public ResponseEntity<?> getRedisKey(@PathVariable("key") String key) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(key);
+        return new ResponseEntity<>(value, HttpStatus.OK);
+    }
+
+
 }
