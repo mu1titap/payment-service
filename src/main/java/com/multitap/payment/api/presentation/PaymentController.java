@@ -99,20 +99,19 @@ public class PaymentController {
     @Operation(summary = "2차 인증 번호 발송", tags = "포인트 정산", description = "추가 인증을 위한 인증번호를 발송합니다 <br>")
     @PostMapping("/settle/send/random-number")
     public BaseResponse<Void> sendRandomNumber(
-        @RequestBody SettlePointsVo settlePointVo
+        @RequestParam("userUuid") String userUuid
     ) {
         log.info("start of sendRandomNum");
 
-        settlePointsService.sendRandomNumber("010-1234-5678");
-
-        // todo : 2차 인증 번호 발송
+        settlePointsService.sendRandomNumber(userUuid);
 
         return new BaseResponse<>();
     }
 
     @Operation(summary = "2차 인증 번호 동일 여부 확인", tags = "포인트 정산", description = "발송한 인증번호와 일치하는지 확인합니다. <br>")
     @PostMapping("/settle/check/random-number")
-    public BaseResponse<Boolean> checkNumber(
+    public BaseResponse<Boolean> checkNumber(@RequestParam("userUuid") String userUuid,
+        @RequestParam("insertedNumber") String insertedNumber
     ) {
         log.info("start of checkNum");
 
