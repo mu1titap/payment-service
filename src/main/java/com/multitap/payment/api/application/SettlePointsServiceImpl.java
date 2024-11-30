@@ -2,6 +2,7 @@ package com.multitap.payment.api.application;
 
 import com.multitap.payment.api.dto.in.SettlePointsDto;
 import com.multitap.payment.common.entity.BaseResponse;
+import com.multitap.payment.common.utils.MailConfigurer;
 import com.multitap.payment.common.utils.RandomNumGenerator;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 public class SettlePointsServiceImpl implements SettlePointsService {
 
     private final UserServiceClient userServiceClient;
+    private final AuthServiceClient authServiceClient;
     private final JavaMailSender javaMailSender;
     private final RedisTemplate<String, String> redisTemplate;
+
 
     @Value("${spring.mail.username}")
     private String senderEmail;
@@ -35,41 +37,36 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     }
 
     @Override
-    public void sendRandomNumber(String phoneNumber) {
+    public void sendRandomNumber(String userUuid) {
+
+        // get Email
+        // todo insert instead
+//        String userEmail = authServiceClient.getUserEmail(userUuid);
+
+        // generate random number
         Integer numberLength = 6;
         String randomNumber = RandomNumGenerator.generateRandomNum(numberLength);
 
+        // config content
+        String toEmail = "kdh39278@naver.com";
         MimeMessage message = javaMailSender.createMimeMessage();
+        message = MailConfigurer.configMimeMessage(message, senderEmail, toEmail, randomNumber);
 
-        try {
-            message.setFrom(senderEmail);
-            message.setRecipients(MimeMessage.RecipientType.TO, "kdh39278@naver.com");
-            message.setSubject("이메일 인증");
-            String body = "";
-            body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
-            body += "<h1>" + randomNumber + "</h1>";
-            body += "<h3>" + "감사합니다." + "</h3>";
-            message.setText(body, "UTF-8", "html");
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (jakarta.mail.MessagingException e) {
-            throw new RuntimeException(e);
-        }
-
+        // send
         javaMailSender.send(message);
 
         // save redis
         // todo make method
-        String authKey = phoneNumber + "-authNum";
+        String authKey = userUuid + "-authNum";
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(authKey, randomNumber);
+        valueOperations.set(authKey, randomNumber, 180, java.util.concurrent.TimeUnit.SECONDS);
 
     }
 
     @Override
-    public Boolean checkRandomNumber(String phoneNumber, String insertedNumber) {
+    public Boolean checkRandomNumber(String userUuid, String insertedNumber) {
 
-        String authKey = phoneNumber + "-authNum";
+        String authKey = userUuid + "-authNum";
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(authKey);
 

@@ -14,18 +14,11 @@ import com.multitap.payment.api.vo.KakaoPayRequestVo;
 import com.multitap.payment.api.vo.KakaoPayResponseVo;
 import com.multitap.payment.api.vo.SessionPaymentVo;
 import com.multitap.payment.api.vo.SettlePointsVo;
-import com.multitap.payment.api.vo.ViewInfoModel;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,51 +104,23 @@ public class PaymentController {
     @Operation(summary = "2차 인증 번호 발송", tags = "포인트 정산", description = "추가 인증을 위한 인증번호를 발송합니다 <br>")
     @PostMapping("/settle/send/random-number")
     public BaseResponse<Void> sendRandomNumber(
-        @RequestBody SettlePointsVo settlePointVo
+        @RequestParam("userUuid") String userUuid
     ) {
         log.info("start of sendRandomNum");
 
-        settlePointsService.sendRandomNumber("010-1234-5678");
-
-        // todo : 2차 인증 번호 발송
+        settlePointsService.sendRandomNumber(userUuid);
 
         return new BaseResponse<>();
     }
 
     @Operation(summary = "2차 인증 번호 동일 여부 확인", tags = "포인트 정산", description = "발송한 인증번호와 일치하는지 확인합니다. <br>")
     @PostMapping("/settle/check/random-number")
-    public BaseResponse<Boolean> checkNumber(
+    public BaseResponse<Boolean> checkNumber(@RequestParam("userUuid") String userUuid,
+        @RequestParam("insertedNumber") String insertedNumber
     ) {
         log.info("start of checkNum");
 
-        // todo : 2차 인증 번호 확인
-
-        return new BaseResponse<>();
-    }
-
-
-    private final RedisTemplate<String, String> redisTemplate;
-
-    @PostMapping("/redisTest")
-    public ResponseEntity<?> addRedisKey(@RequestBody ViewInfoModel vo) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        log.info("vo: {}", vo.toString());
-        valueOperations.set(vo.getCallId(), vo.getOpenedAt());
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @GetMapping("/redisTest/{key}")
-    public ResponseEntity<?> getRedisKey(@PathVariable("key") String key) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String value = valueOperations.get(key);
-        return new ResponseEntity<>(value, HttpStatus.OK);
-    }
-
-    @GetMapping("/redisTest/check/{key}")
-    public ResponseEntity<Boolean> checkRandNum(@RequestParam("phoneNumber") String phoneNumber,
-        @RequestParam("insertedNumber") String insertedNumber) {
-        return new ResponseEntity<>(
-            settlePointsService.checkRandomNumber(phoneNumber, insertedNumber), HttpStatus.OK);
+        return new BaseResponse<>(settlePointsService.checkRandomNumber(userUuid, insertedNumber));
     }
 
 

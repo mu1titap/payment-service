@@ -6,7 +6,7 @@ public interface SettlePointsService {
 
     Boolean settlePoints(SettlePointsDto settlePointsDto);
 
-    void sendRandomNumber(String phoneNumber);
+    void sendRandomNumber(String userUuid);
 
-    Boolean checkRandomNumber(String insertNumber, String insertedNumber);
+    Boolean checkRandomNumber(String userUuid, String insertedNumber);
 }
