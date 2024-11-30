@@ -7,6 +7,8 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
     private final UserServiceClient userServiceClient;
     private final JavaMailSender javaMailSender;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${spring.mail.username}")
     private String senderEmail;
@@ -55,11 +58,23 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
         javaMailSender.send(message);
 
+        // save redis
+        // todo make method
+        String authKey = phoneNumber + "-authNum";
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(authKey, randomNumber);
+
     }
 
     @Override
-    public Boolean checkRandomNumber(String phoneNumber, String randomNumber) {
-        return true;
+    public Boolean checkRandomNumber(String phoneNumber, String insertedNumber) {
+
+        String authKey = phoneNumber + "-authNum";
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(authKey);
+
+        // 맞을 시 redis에서 삭제하는 로직 필요
+        return value.equals(insertedNumber);
     }
 
 }

@@ -8,5 +8,5 @@ public interface SettlePointsService {
 
     void sendRandomNumber(String phoneNumber);
 
-    Boolean checkRandomNumber(String insertNumber, String phoneNumber);
+    Boolean checkRandomNumber(String insertNumber, String insertedNumber);
 }
