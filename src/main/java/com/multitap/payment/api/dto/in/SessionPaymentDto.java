@@ -31,6 +31,7 @@ public class SessionPaymentDto {
         return VoltHistory.builder()
             .sessionUuid(sessionUuid)
             .menteeUuid(menteeUuid)
+            .mentorUuid(mentorUuid)
             .volt(volt)
             .build();
 
