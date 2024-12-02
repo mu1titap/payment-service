@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class VoltResponse {
 
+    private Long id;
     private Integer volt;
     private LocalDateTime date;
     private String sender;

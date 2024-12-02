@@ -8,6 +8,7 @@ import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
+import com.multitap.payment.api.dto.out.ExchangeDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.VoltHistoryDto;
 import com.multitap.payment.api.vo.ExchangePointsVo;
@@ -122,16 +123,20 @@ public class PaymentController {
         return new BaseResponse<>(settlePointsService.getVoltHistory(mentorUuid));
     }
 
-    @Operation(summary = "기간 별 정산 내역 반환 ", tags = "포인트 정산", description = "기간 별 정산 내역을 반환합니다.<br>"
-        + "날짜 형식 : 20240101 (8자리)")
+    @Operation(summary = "기간 별 정산 내역 반환 ", tags = "포인트 정산",
+        description = "기간 별 정산 내역을 반환합니다.<br>"
+            + "날짜 형식 : 20240101 (8자리) <br>"
+            + "- money의 경우 현재 1volt 당 100원 <br>"
+            + "수수료 10%로 계산하여 반환합니다. <br>"
+            + "- 정산 status는 PROCEEDING, COMPLETED 두 가지 상태로 관리됩니다.")
     @GetMapping("/settle/points")
-    public BaseResponse<Void> getPointsBetweenDates(
+    public BaseResponse<ExchangeDto> getPointsBetweenDates(
         @RequestParam(value = "startDate", required = false) String startDate,
-        @RequestParam(value = "endDate", required = false) String endDate
+        @RequestParam(value = "endDate", required = false) String endDate,
+        @RequestParam(value = "mentorUuid", required = true) String mentorUuid
     ) {
         log.info("start of getPointsBetweenDates");
-
-        return new BaseResponse<>();
+        return new BaseResponse<>(settlePointsService.getExchange(startDate, endDate, mentorUuid));
     }
 
 
