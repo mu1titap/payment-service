@@ -10,7 +10,7 @@ import com.multitap.payment.api.dto.out.ExchangeDtoList;
 import com.multitap.payment.api.dto.out.VoltHistoryDto;
 import com.multitap.payment.api.infrastructure.ExchangeRepository;
 import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
-import com.multitap.payment.api.vo.VoltResponse;
+import com.multitap.payment.api.vo.out.VoltResponse;
 import com.multitap.payment.common.entity.BaseResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
