@@ -15,6 +15,7 @@ import com.multitap.payment.common.entity.BaseResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -56,6 +57,7 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
     @Override
     public VoltHistoryDto getVoltHistory(String mentorUuid) {
+        // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
         List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMentorUuid(mentorUuid);
         if (voltHistoryList.isEmpty()) {
             return null;
@@ -69,14 +71,16 @@ public class SettlePointsServiceImpl implements SettlePointsService {
         VoltHistoryDto voltHistoryDto = new VoltHistoryDto();
 
         List<VoltResponse> voltResponseList =
-            voltHistoryList.stream().map(voltHistory ->
+            new java.util.ArrayList<>(voltHistoryList.stream().map(voltHistory ->
                     VoltResponse.builder()
                         .id(voltHistory.getId())
                         .volt(voltHistory.getVolt())
                         .date(voltHistory.getCreatedAt())
                         .sender(voltHistory.getMenteeUuid())
                         .build())
-                .toList();
+                .toList());
+
+        Collections.reverse(voltResponseList);
 
         voltHistoryDto.setVoltResponse(voltAmount, voltResponseList);
 
