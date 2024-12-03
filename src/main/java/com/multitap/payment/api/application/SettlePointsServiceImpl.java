@@ -15,6 +15,7 @@ import com.multitap.payment.common.entity.BaseResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class SettlePointsServiceImpl implements SettlePointsService {
         VoltHistoryDto voltHistoryDto = new VoltHistoryDto();
 
         List<VoltResponse> voltResponseList =
-            new java.util.ArrayList<>(voltHistoryList.stream().map(voltHistory ->
+            new ArrayList<>(voltHistoryList.stream().map(voltHistory ->
                     VoltResponse.builder()
                         .id(voltHistory.getId())
                         .volt(voltHistory.getVolt())
