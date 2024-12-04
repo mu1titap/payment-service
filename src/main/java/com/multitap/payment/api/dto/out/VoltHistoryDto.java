@@ -1,6 +1,6 @@
 package com.multitap.payment.api.dto.out;
 
-import com.multitap.payment.api.vo.VoltResponse;
+import com.multitap.payment.api.vo.out.VoltResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

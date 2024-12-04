@@ -1,4 +1,4 @@
-package com.multitap.payment.api.vo;
+package com.multitap.payment.api.vo.out;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

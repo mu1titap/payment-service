@@ -1,4 +1,4 @@
-package com.multitap.payment.api.vo;
+package com.multitap.payment.api.vo.out;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

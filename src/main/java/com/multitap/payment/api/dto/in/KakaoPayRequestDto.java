@@ -1,7 +1,7 @@
 package com.multitap.payment.api.dto.in;
 
 import com.multitap.payment.api.domain.KakaoPay;
-import com.multitap.payment.api.vo.KakaoPayRequestVo;
+import com.multitap.payment.api.vo.in.KakaoPayRequestVo;
 import com.multitap.payment.common.utils.PartnerOrderCodeGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "payment_info")
 @Entity
+@Getter
 public class PaymentInfoEntity extends BaseEntity {
 
     @Id
