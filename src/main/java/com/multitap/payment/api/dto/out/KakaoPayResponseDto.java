@@ -1,7 +1,7 @@
 package com.multitap.payment.api.dto.out;
 
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
-import com.multitap.payment.api.vo.KakaoPayResponseVo;
+import com.multitap.payment.api.vo.out.KakaoPayResponseVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

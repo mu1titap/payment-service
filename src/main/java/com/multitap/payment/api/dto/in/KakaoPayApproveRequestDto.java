@@ -1,9 +1,6 @@
 package com.multitap.payment.api.dto.in;
 
-import com.multitap.payment.api.domain.KakaoPay;
-import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
-import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KakaoPayApproveRequestDto {
+
     private String cid;
 
     private String tid;
@@ -24,7 +22,8 @@ public class KakaoPayApproveRequestDto {
 
     private String pgToken;
 
-    public static KakaoPayApproveRequestDto from(KakaoPayApproveRequestVo kakaoPayApproveRequestVo){
+    public static KakaoPayApproveRequestDto from(
+        KakaoPayApproveRequestVo kakaoPayApproveRequestVo) {
         return KakaoPayApproveRequestDto.builder()
             .cid(kakaoPayApproveRequestVo.getCid())
             .tid(kakaoPayApproveRequestVo.getTid())
@@ -33,7 +32,6 @@ public class KakaoPayApproveRequestDto {
             .pgToken(kakaoPayApproveRequestVo.getPgToken())
             .build();
     }
-
 
 
 }

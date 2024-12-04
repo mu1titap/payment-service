@@ -1,6 +1,5 @@
 package com.multitap.payment.api.domain;
 
-import com.multitap.payment.api.common.PaymentType;
 import com.multitap.payment.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,29 +7,30 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "payment_info")
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class PaymentInfoEntity extends BaseEntity {
+@ToString
+public class Exchange extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String menteeUuid;
+    private String mentorUuid;
     private Integer volt;
+    private String account;
     @Enumerated(EnumType.STRING)
-    private PaymentType type;
-    private Integer cash;
-    private Long refundId;
+    private ExchangeStatus status;
+    @Enumerated(EnumType.STRING)
+    private BankCode bankCode;
 
 
 }

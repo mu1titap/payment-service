@@ -9,7 +9,7 @@ import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
+import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import java.util.HashMap;
@@ -141,11 +141,11 @@ public class KakaoPayServiceImpl implements KakaoPayService {
 
     @Override
     public void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo) {
-        log.info("start of addPoint");
-        kakaoPayRepository.findByCid(kakaoPayApproveRequestVo.getCid()).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_KAKAOPAY_RESPONSE)
-        );
-        userServiceClient.updatePoints(userReqDto);
+        log.info("start of addPoint at serviceImpl");
+        if (!kakaoPayRepository.existsByCid(kakaoPayApproveRequestVo.getCid())) {
+            throw new BaseException(BaseResponseStatus.NO_KAKOPAY_PAYMENT);
+        } // 중복 결제 방지. kakoPay 결제 확인 시 만 결제하도록
+        userServiceClient.addPoints(userReqDto);
         log.info("Successfully point updated!");
     }
 
