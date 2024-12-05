@@ -88,8 +88,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     @Override
     @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
-        KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
-        String memberUuid) {
+        KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
 
         log.info("start of kakaoPayApprove");
         RestTemplate restTemplate = new RestTemplate();
@@ -127,7 +126,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         // 결제 요청 저장
         kakaoPayRepository.save(kakaoPayApproveResponseDto.toEntity());
         PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
-            .menteeUuid(memberUuid)
+            .menteeUuid(kakaoPayApproveResponseDto.getPartner_user_id())
             .volt(kakaoPayApproveResponseDto.getQuantity())
             .type(PaymentType.KAKAO_PAY) // 다른 결제 type 생길 시 변경
             .cash(kakaoPayApproveResponseDto.getAmount().getTotal())
