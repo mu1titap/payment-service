@@ -1,4 +1,4 @@
-package com.multitap.payment.api.dto.in;
+package com.multitap.payment.api.kafka.messageIn;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

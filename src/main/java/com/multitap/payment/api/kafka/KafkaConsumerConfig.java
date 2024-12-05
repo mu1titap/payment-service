@@ -1,6 +1,6 @@
 package com.multitap.payment.api.kafka;
 
-import com.multitap.payment.api.dto.in.SessionConfirmedDto;
+import com.multitap.payment.api.kafka.messageIn.SessionConfirmedDto;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
