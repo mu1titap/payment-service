@@ -17,10 +17,10 @@ public class KakaoPayRequestVo {
     private int quantity;
     private int totalAmount;
     private int taxFreeAmount;
-    @Schema(defaultValue = "https://lims-dev.tistory.com")
+    @Schema(defaultValue = "http://localhost:3003/payment-confirm")
     private String approvalUrl;
-    @Schema(defaultValue = "https://pknustu.youngjin.com")
+    @Schema(defaultValue = "http://localhost:3003/payment-fail")
     private String failUrl;
-    @Schema(defaultValue = "https://github.com")
+    @Schema(defaultValue = "http://localhost:3003/payment-cancle")
     private String cancelUrl;
 }
