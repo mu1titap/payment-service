@@ -17,7 +17,7 @@ public class KakaoPayRequestVo {
     private int quantity;
     private int totalAmount;
     private int taxFreeAmount;
-    @Schema(defaultValue = "http://localhost:3003/payment-confirm")
+    @Schema(defaultValue = "http://localhost:3003/mypage/volt/payment-confirm")
     private String approvalUrl;
     @Schema(defaultValue = "http://localhost:3003/payment-fail")
     private String failUrl;
