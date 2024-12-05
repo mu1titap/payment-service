@@ -5,6 +5,7 @@ import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.utils.MailConfigurer;
 import com.multitap.payment.common.utils.RandomNumGenerator;
 import jakarta.mail.internet.MimeMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,8 +71,20 @@ public class SettlePointsServiceImpl implements SettlePointsService {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(authKey);
 
-        // 맞을 시 redis에서 삭제하는 로직 필요
-        return value.equals(insertedNumber);
+        ValueOperation<String, List<String>> valueOperationList = redisTemplate.opsForList();
+        if (value.equals(insertedNumber)) {
+            // 맞을 시 redis에서 key 삭제
+            valueOperations.getOperations().delete(authKey);
+            // verfied 된 유저 추가하기
+            valueOperations.set("verified",  )
+            return true;
+        }
+        else{
+            return false;
+            }
+        }
+
+
     }
 
 }
