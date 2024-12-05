@@ -1,4 +1,4 @@
-package com.multitap.payment.api.domain;
+package com.multitap.payment.api.domain.enum_file;
 
 
 import lombok.Getter;
