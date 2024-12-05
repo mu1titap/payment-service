@@ -1,7 +1,6 @@
 package com.multitap.payment.api.application;
 
 import com.multitap.payment.api.common.PaymentType;
-import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.PaymentInfoDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
@@ -17,6 +16,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -33,6 +34,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     private final KakaoPayRepository kakaoPayRepository;
     private final PaymentInfoRepository paymentInfoRepository;
     private final UserServiceClient userServiceClient;
+    private final RedisTemplate<String, String> redisTemplates;
 
 
     @Value("${kakao.api.secret-key}")
@@ -81,6 +83,14 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             BaseResponseStatus.NO_KAKAOPAY_RESPONSE);
         kakaoPayResponseDto.setPartnerOrderIdToResponse(kakaoPayRequestDto.getPartnerOrderId());
 
+        // redis 추가
+        ValueOperations<String, String> valueOperations = redisTemplates.opsForValue();
+        valueOperations.set("cid", kakaoPayRequestDto.getCid());
+        valueOperations.set("tid", kakaoPayResponseDto.getTid());
+        valueOperations.set("partner_order_id", kakaoPayResponseDto.getPartnerOrderId());
+        valueOperations.set("partner_user_id", kakaoPayRequestDto.getPartnerUserId());
+        valueOperations.set("quantity", Integer.toString(kakaoPayRequestDto.getQuantity()));
+
         return kakaoPayResponseDto;
 
     }
@@ -88,7 +98,11 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     @Override
     @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
-        KakaoPayApproveRequestDto kakaoPayApproveRequestDto) {
+        String pgToken) {
+
+        // redis
+        ValueOperations<String, String> valueOperations = redisTemplates.opsForValue();
+        ;
 
         log.info("start of kakaoPayApprove");
         RestTemplate restTemplate = new RestTemplate();
@@ -101,11 +115,11 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         headers.set("Accept", "application/json");
 
         Map<String, String> payParams = new HashMap<>();
-        payParams.put("cid", "TC0ONETIME");
-        payParams.put("tid", kakaoPayApproveRequestDto.getTid());
-        payParams.put("partner_order_id", kakaoPayApproveRequestDto.getPartnerOrderId());
-        payParams.put("partner_user_id", kakaoPayApproveRequestDto.getPartnerUserId());
-        payParams.put("pg_token", kakaoPayApproveRequestDto.getPgToken());
+        payParams.put("cid", valueOperations.get("cid"));
+        payParams.put("tid", valueOperations.get("tid"));
+        payParams.put("partner_order_id", valueOperations.get("partner_order_id"));
+        payParams.put("partner_user_id", valueOperations.get("partner_user_id"));
+        payParams.put("pg_token", pgToken);
 
         log.info("payParams: {}" + payParams);
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payParams, headers);
