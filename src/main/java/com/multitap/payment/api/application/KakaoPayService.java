@@ -11,8 +11,7 @@ public interface KakaoPayService {
 
     KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto);
 
-    KakaoPayApproveResponseDto kakaoPayApprove(KakaoPayApproveRequestDto kakaoPayApproveRequestDto,
-        String memeberUuid);
+    KakaoPayApproveResponseDto kakaoPayApprove(KakaoPayApproveRequestDto kakaoPayApproveRequestDto);
 
 
     void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo);

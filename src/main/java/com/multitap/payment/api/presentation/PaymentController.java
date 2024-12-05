@@ -36,7 +36,10 @@ public class PaymentController {
     private final SettlePointsService settlePointsService;
 
     @PostMapping("/ready")
-    @Operation(summary = "결제 준비 요청", tags = "카카오페이 결제")
+    @Operation(summary = "결제 준비 요청", tags = "카카오페이 결제"
+        , description = "cid : TC0ONETIME(고정), partner_order_id(가맹점번호): back에서 생성 ,<br>"
+        + " partner_user_id(유저uuid) : , item_name : 상품명, quantity : 수량, total_amount : 총액,<br>"
+        + " tax_free_amount : 비과세액, approval_url : 결제성공시 리다이렉트 url, cancel_url : 결제취소시 리다이렉트 url, fail_url : 결제실패시 리다이렉트 url")
     public BaseResponse<KakaoPayResponseVo> paymentReady(@RequestBody KakaoPayRequestVo vo) {
         log.info("paymentRead");
         KakaoPayRequestDto kakaoPayRequestDto = KakaoPayRequestDto.from(vo);
@@ -44,16 +47,19 @@ public class PaymentController {
         return new BaseResponse<>(kakaoPayService.kakaoPayReady(kakaoPayRequestDto).toVo());
     }
 
-    @Operation(summary = "결제 승인 요청", tags = "카카오페이 결제")
+    @Operation(summary = "결제 승인 요청", tags = "카카오페이 결제"
+        , description = "cid : TC0ONETIME(고정), tid : 준비요청 response 온 값으로, <br>"
+        + "partner_order_id(가맹점번호): 준비요청 response 온 값으로 <br>"
+        + "partner_user_id(유저uuid)<br>"
+        + "pg_token : redirect 파라미터로 오는 값으로 <br>"
+        + "quantity : 수량")
     @PostMapping("/approve")
     public BaseResponse<KakaoPayApproveResponseDto> paymentApprove(
-        @RequestParam("uuid") String memberuuid,
         @RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo
 
     ) {
         log.info("start of payment approve");
-        kakaoPayService.kakaoPayApprove(KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo),
-            memberuuid);
+        kakaoPayService.kakaoPayApprove(KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo));
         return new BaseResponse<>();
     }
 
