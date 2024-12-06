@@ -4,7 +4,6 @@ import com.multitap.payment.api.application.KakaoPayService;
 import com.multitap.payment.api.application.SessionPaymentService;
 import com.multitap.payment.api.application.SettlePointsService;
 import com.multitap.payment.api.dto.in.ExchangePointsDto;
-import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
@@ -36,7 +35,16 @@ public class PaymentController {
     private final SettlePointsService settlePointsService;
 
     @PostMapping("/ready")
-    @Operation(summary = "결제 준비 요청", tags = "카카오페이 결제")
+    @Operation(summary = "결제 준비 요청", tags = "카카오페이 결제"
+        , description = "cid : TC0ONETIME(고정), partner_order_id(가맹점번호): back에서 생성 ,<br>"
+        + " partner_user_id(유저uuid) : <br>"
+        + " item_name : 상품명 <br> "
+        + " quantity : 수량 <br> "
+        + " total_amount : 총액 <br>"
+        + " tax_free_amount : 비과세액 <br> "
+        + " approval_url : 결제성공시 리다이렉트 url <br>"
+        + " cancel_url : 결제취소시 리다이렉트 url <br> "
+        + " fail_url : 결제실패시 리다이렉트 url")
     public BaseResponse<KakaoPayResponseVo> paymentReady(@RequestBody KakaoPayRequestVo vo) {
         log.info("paymentRead");
         KakaoPayRequestDto kakaoPayRequestDto = KakaoPayRequestDto.from(vo);
@@ -44,16 +52,15 @@ public class PaymentController {
         return new BaseResponse<>(kakaoPayService.kakaoPayReady(kakaoPayRequestDto).toVo());
     }
 
-    @Operation(summary = "결제 승인 요청", tags = "카카오페이 결제")
+    @Operation(summary = "결제 승인 요청", tags = "카카오페이 결제"
+        , description = "pg_token 요청 시 최종 결제 승인이 됩니다.")
     @PostMapping("/approve")
     public BaseResponse<KakaoPayApproveResponseDto> paymentApprove(
-        @RequestParam("uuid") String memberuuid,
-        @RequestBody KakaoPayApproveRequestVo kakaoPayApproveRequestVo
+        @RequestParam("pg_token") String pgToken
 
     ) {
         log.info("start of payment approve");
-        kakaoPayService.kakaoPayApprove(KakaoPayApproveRequestDto.from(kakaoPayApproveRequestVo),
-            memberuuid);
+        kakaoPayService.kakaoPayApprove(pgToken);
         return new BaseResponse<>();
     }
 
