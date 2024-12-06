@@ -5,6 +5,7 @@ import com.multitap.payment.api.kafka.messageIn.SessionConfirmedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RequiredArgsConstructor
@@ -15,13 +16,17 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
     private final VoltHistoryRepository voltHistoryRepository;
 
     @Override
+    @Transactional
     public void updateVoltHistoryStatus(SessionConfirmedDto sessionConfirmedDto) {
 
         voltHistoryRepository.findBySessionUuid(sessionConfirmedDto.getSessionUuid())
             .ifPresentOrElse(
                 voltHistory -> {
-                    voltHistory.setSessionStatus(sessionConfirmedDto.getSessionStatus());
-                    voltHistoryRepository.save(voltHistory);
+                    voltHistory.forEach(v -> {
+                        v.updatePaymentStatus(sessionConfirmedDto);
+                        voltHistoryRepository.save(v);
+                    });
+
                 },
                 () -> log.error("VoltHistory not found for sessionUuid: {}",
                     sessionConfirmedDto.getSessionUuid())

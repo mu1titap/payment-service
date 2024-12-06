@@ -1,6 +1,7 @@
 package com.multitap.payment.api.domain;
 
 import com.multitap.payment.api.domain.enum_file.PaymentStatus;
+import com.multitap.payment.api.kafka.messageIn.SessionConfirmedDto;
 import com.multitap.payment.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,4 +42,11 @@ public class VoltHistory extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("PENDING")
     private PaymentStatus paymentStatus;
+
+
+    public void updatePaymentStatus(SessionConfirmedDto dto) {
+        if (dto.getSessionIsConfirmed()) {
+            this.paymentStatus = PaymentStatus.COMPLETED;
+        }
+    }
 }
