@@ -1,4 +1,4 @@
-package com.multitap.payment.api.common;
+package com.multitap.payment.api.domain.enum_file;
 
 public enum PaymentType {
     KAKAO_PAY,

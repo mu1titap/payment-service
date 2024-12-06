@@ -1,6 +1,6 @@
 package com.multitap.payment.api.domain;
 
-import com.multitap.payment.api.common.PaymentType;
+import com.multitap.payment.api.domain.enum_file.PaymentType;
 import com.multitap.payment.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

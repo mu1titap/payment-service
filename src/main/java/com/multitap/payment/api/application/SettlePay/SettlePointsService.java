@@ -1,4 +1,4 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.SettlePay;
 
 
 import com.multitap.payment.api.dto.in.ExchangePointsDto;

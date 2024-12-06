@@ -1,7 +1,7 @@
 package com.multitap.payment.api.presentation;
 
-import com.multitap.payment.api.application.PointHistoryService;
-import com.multitap.payment.api.application.SettlePointsService;
+import com.multitap.payment.api.application.PointHistoryPay.PointHistoryService;
+import com.multitap.payment.api.application.SettlePay.SettlePointsService;
 import com.multitap.payment.api.dto.out.ExchangeDto;
 import com.multitap.payment.api.dto.out.PointHistoryResponseDto;
 import com.multitap.payment.api.dto.out.VoltHistoryDto;

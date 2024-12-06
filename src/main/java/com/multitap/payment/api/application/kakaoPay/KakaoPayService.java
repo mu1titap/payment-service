@@ -1,10 +1,8 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.kakaoPay;
 
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
-import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
-import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
 
 public interface KakaoPayService {
 
@@ -12,6 +10,5 @@ public interface KakaoPayService {
 
     KakaoPayApproveResponseDto kakaoPayApprove(String pgToken);
 
-
-    void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo);
+//    void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo);
 }

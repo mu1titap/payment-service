@@ -1,4 +1,4 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.PointHistoryPay;
 
 import com.multitap.payment.api.dto.out.PointHistoryResponseDto;
 import java.util.List;

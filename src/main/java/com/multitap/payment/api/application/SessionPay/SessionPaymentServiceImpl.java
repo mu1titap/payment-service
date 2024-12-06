@@ -1,5 +1,6 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.SessionPay;
 
+import com.multitap.payment.api.application.UserServiceClient;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
 import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
 import lombok.AllArgsConstructor;
