@@ -1,8 +1,8 @@
 package com.multitap.payment.api.presentation;
 
-import com.multitap.payment.api.application.KakaoPayService;
-import com.multitap.payment.api.application.SessionPaymentService;
-import com.multitap.payment.api.application.SettlePointsService;
+import com.multitap.payment.api.application.SessionPay.SessionPaymentService;
+import com.multitap.payment.api.application.SettlePay.SettlePointsService;
+import com.multitap.payment.api.application.kakaoPay.KakaoPayService;
 import com.multitap.payment.api.dto.in.ExchangePointsDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;

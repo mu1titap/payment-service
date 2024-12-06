@@ -1,4 +1,4 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.kakaoPay;
 
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
