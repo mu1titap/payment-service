@@ -8,7 +8,6 @@ import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import java.util.HashMap;
@@ -60,9 +59,9 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         payParams.put("partner_order_id", kakaoPayRequestDto.getPartnerOrderId());
         payParams.put("partner_user_id", kakaoPayRequestDto.getPartnerUserId());
         payParams.put("item_name", kakaoPayRequestDto.getItemName());
-        payParams.put("quantity", "3");
-        payParams.put("total_amount", "14400");
-        payParams.put("tax_free_amount", "3000");
+        payParams.put("quantity", kakaoPayRequestDto.getQuantity().toString());
+        payParams.put("total_amount", kakaoPayRequestDto.getTotalAmount().toString());
+        payParams.put("tax_free_amount", kakaoPayRequestDto.getTaxFreeAmount().toString());
         payParams.put("approval_url", kakaoPayRequestDto.getApprovalUrl());
         payParams.put("fail_url", kakaoPayRequestDto.getFailUrl());
         payParams.put("cancel_url", kakaoPayRequestDto.getCancelUrl());
@@ -121,7 +120,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
         payParams.put("partner_user_id", valueOperations.get("partner_user_id"));
         payParams.put("pg_token", pgToken);
 
-        log.info("payParams: {}" + payParams);
+        log.info("payParams: {}", payParams);
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payParams, headers);
 
         log.info("cid: {}", payParams.get("cid"));
@@ -147,20 +146,29 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             .build();
         paymentInfoRepository.save(paymentInfoDto.toEntity());
         log.info("Payment information saved successfully");
+        log.info("request add user point");
+
+        UserReqDto userReqDto = UserReqDto.builder()
+            .userUuid(kakaoPayApproveResponseDto.getPartner_user_id())
+            .pointQuantity(kakaoPayApproveResponseDto.getAmount().getTotal())
+            .build();
+        log.info("userReqDto: {}", userReqDto.toString());
+        userServiceClient.addPoints(userReqDto);
+        log.info("after userServiceClient.addPoints");
 
         return kakaoPayApproveResponseDto;
 
     }
 
-    @Override
-    public void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo) {
-        log.info("start of addPoint at serviceImpl");
-        if (!kakaoPayRepository.existsByCid(kakaoPayApproveRequestVo.getCid())) {
-            throw new BaseException(BaseResponseStatus.NO_KAKOPAY_PAYMENT);
-        } // 중복 결제 방지. kakoPay 결제 확인 시 만 결제하도록
-        userServiceClient.addPoints(userReqDto);
-        log.info("Successfully point updated!");
-    }
+//    @Override
+//    public void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo) {
+//        log.info("start of addPoint at serviceImpl");
+//        if (!kakaoPayRepository.existsByCid(kakaoPayApproveRequestVo.getCid())) {
+//            throw new BaseException(BaseResponseStatus.NO_KAKOPAY_PAYMENT);
+//        } // 중복 결제 방지. kakoPay 결제 확인 시 만 결제하도록
+//        userServiceClient.addPoints(userReqDto);
+//        log.info("Successfully point updated!");
+//    }
 
 
 }
