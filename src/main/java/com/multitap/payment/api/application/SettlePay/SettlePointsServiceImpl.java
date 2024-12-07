@@ -1,6 +1,7 @@
 package com.multitap.payment.api.application.SettlePay;
 
 
+import com.multitap.payment.api.application.AuthServiceClient;
 import com.multitap.payment.api.application.UserServiceClient;
 import com.multitap.payment.api.common.PointConstants;
 import com.multitap.payment.api.domain.Exchange;
@@ -12,7 +13,12 @@ import com.multitap.payment.api.dto.out.VoltHistoryDto;
 import com.multitap.payment.api.infrastructure.ExchangeRepository;
 import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
 import com.multitap.payment.api.vo.out.VoltResponse;
+import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponse;
+import com.multitap.payment.common.entity.BaseResponseStatus;
+import com.multitap.payment.common.utils.MailConfigurer;
+import com.multitap.payment.common.utils.RandomNumGenerator;
+import jakarta.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +27,11 @@ import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,7 +42,13 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     private final UserServiceClient userServiceClient;
     private final VoltHistoryRepository voltHistoryRepository;
     private final ExchangeRepository exchangeRepository;
+    private final AuthServiceClient authServiceClient;
+    private final JavaMailSender javaMailSender;
+    private final RedisTemplate<String, String> redisTemplate;
 
+
+    @Value("${spring.mail.username}")
+    private String senderEmail;
 
     @Override
     public Boolean settlePoints(ExchangePointsDto exchangePointsDto) {
@@ -88,6 +105,7 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
         return voltHistoryDto;
 
+
     }
 
 
@@ -127,8 +145,21 @@ public class SettlePointsServiceImpl implements SettlePointsService {
             .totalExchange(exchangeAmount)
             .exchangeList(exchangePointsDtoList)
             .build();
+        }
 
+        @Override
+    public void deleteRandomNumber(String userUuid) {
+        String authKey = userUuid + "-authNum";
+        redisTemplate.delete(authKey);
+
+        }
+
+    @Override
+    public void deleteVerifiedUser(String userUuid) {
+        ListOperations<String, String> valueOperationList = redisTemplate.opsForList();
+        valueOperationList.remove("verified", 0, userUuid);
+    }
 
     }
 
-}
+

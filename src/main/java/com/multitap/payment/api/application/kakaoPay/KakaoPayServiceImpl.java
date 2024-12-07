@@ -95,6 +95,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     }
 
     @Override
+    @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
         String pgToken) {
 
