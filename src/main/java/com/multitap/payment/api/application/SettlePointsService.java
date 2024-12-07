@@ -9,4 +9,9 @@ public interface SettlePointsService {
     void sendRandomNumber(String userUuid);
 
     Boolean checkRandomNumber(String userUuid, String insertedNumber);
+
+    void deleteRandomNumber(String userUuid);
+
+    void deleteVerifiedUser(String userUuid);
+
 }
