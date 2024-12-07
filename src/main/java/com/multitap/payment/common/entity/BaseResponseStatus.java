@@ -79,6 +79,7 @@ public enum BaseResponseStatus {
     NO_DELETE_RE_COMMENT_AUTHORITY(HttpStatus.BAD_REQUEST, false, 403, "대댓글 삭제 권한이 없습니다"),
     NO_EXIST_RE_COMMENT(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 대댓글입니다"),
     NO_EXIST_PIN_AUTHORITY(HttpStatus.BAD_REQUEST, false, 403, "고정 권한이 없습니다"),
+    
 
     // Notification
     NO_EXIST_NOTIFICATION_SETTING(HttpStatus.NOT_FOUND, false, 404, "유저의 알림 설정이 존재하지 않습니다."),

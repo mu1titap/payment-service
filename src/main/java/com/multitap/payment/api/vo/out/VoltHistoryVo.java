@@ -1,21 +1,22 @@
-package com.multitap.payment.api.dto.in;
+package com.multitap.payment.api.vo.out;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Setter
+
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class UserReqDto {
+public class VoltHistoryVo {
 
-    private String userUuid;
-    private Integer pointQuantity;
+    private Integer totalVolt;
+    private List<VoltResponse> voltList;
 
 }
+

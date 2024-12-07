@@ -1,12 +1,9 @@
-package com.multitap.payment.api.common;
-
-import static org.apache.commons.lang3.ArrayUtils.toArray;
+package com.multitap.payment.api.common.enums;
 
 import java.util.Arrays;
-import lombok.NoArgsConstructor;
 
 public enum PointChargingPolicy {
-    FIRST(10,1000),
+    FIRST(10, 1000),
     SECOND(30, 3000),
     THIRD(50, 5000),
     FOURTH(100, 10000),
