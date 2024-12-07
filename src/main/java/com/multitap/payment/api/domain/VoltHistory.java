@@ -47,6 +47,7 @@ public class VoltHistory extends BaseEntity {
     public void updatePaymentStatus(SessionConfirmedDto dto) {
         if (dto.getSessionIsConfirmed()) {
             this.paymentStatus = PaymentStatus.COMPLETED;
+            this.mentorUuid = dto.getMentorUuid();  // null update
         }
     }
 }

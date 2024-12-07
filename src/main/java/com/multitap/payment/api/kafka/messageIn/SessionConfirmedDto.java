@@ -15,4 +15,5 @@ public class SessionConfirmedDto {
 
     private String sessionUuid;
     private Boolean sessionIsConfirmed;
+    private String mentorUuid;
 }
