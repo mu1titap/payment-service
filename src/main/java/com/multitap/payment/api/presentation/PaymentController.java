@@ -145,5 +145,15 @@ public class PaymentController {
             settlePointsService.checkRandomNumber(phoneNumber, insertedNumber), HttpStatus.OK);
     }
 
+    @Operation(summary = "정산 페이지 이동 시 요청", tags = "포인트 정산", description = "random 번호 및 인증된 회원 목록을 redis에서 삭제합니다. <br>")
+    @PostMapping("/settle/redirect-page")
+    public void redirectPage(@RequestParam("userUuid") String userUuid
+    ) {
+        log.info("start of redirectPage");
+        settlePointsService.deleteRandomNumber(userUuid);
+        settlePointsService.deleteVerifiedUser(userUuid);
+        
+    }
+
 
 }
