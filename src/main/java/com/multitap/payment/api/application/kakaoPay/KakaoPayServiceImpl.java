@@ -1,5 +1,6 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.kakaoPay;
 
+import com.multitap.payment.api.application.UserServiceClient;
 import com.multitap.payment.api.common.PaymentType;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
@@ -9,7 +10,7 @@ import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
 import com.multitap.payment.api.infrastructure.KakaoPayRepository;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
+import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import java.util.HashMap;

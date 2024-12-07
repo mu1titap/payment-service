@@ -1,6 +1,8 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.SettlePay;
 
-import com.multitap.payment.api.dto.in.SettlePointsDto;
+import com.multitap.payment.api.application.AuthServiceClient;
+import com.multitap.payment.api.application.UserServiceClient;
+import com.multitap.payment.api.dto.in.ExchangePointsDto;
 import com.multitap.payment.common.Exception.BaseException;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
@@ -31,10 +33,10 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     private String senderEmail;
 
     @Override
-    public Boolean settlePoints(SettlePointsDto settlePointsDto) {
+    public Boolean settlePoints(ExchangePointsDto exchangePointsDto) {
         BaseResponse<Boolean> response =
-            userServiceClient.usePoints(settlePointsDto.getMentorUuid(),
-                settlePointsDto.getPoints());
+            userServiceClient.usePoints(exchangePointsDto.getMentorUuid(),
+                exchangePointsDto.getPoints());
 
         return response.result();
     }

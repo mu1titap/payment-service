@@ -1,19 +1,19 @@
 package com.multitap.payment.api.presentation;
 
-import com.multitap.payment.api.application.KakaoPayService;
-import com.multitap.payment.api.application.SessionPaymentService;
-import com.multitap.payment.api.application.SettlePointsService;
+import com.multitap.payment.api.application.SessionPay.SessionPaymentService;
+import com.multitap.payment.api.application.SettlePay.SettlePointsService;
+import com.multitap.payment.api.application.kakaoPay.KakaoPayService;
+import com.multitap.payment.api.dto.in.ExchangePointsDto;
 import com.multitap.payment.api.dto.in.KakaoPayApproveRequestDto;
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
-import com.multitap.payment.api.dto.in.SettlePointsDto;
 import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
-import com.multitap.payment.api.vo.KakaoPayApproveRequestVo;
-import com.multitap.payment.api.vo.KakaoPayRequestVo;
-import com.multitap.payment.api.vo.KakaoPayResponseVo;
+import com.multitap.payment.api.vo.ExchangePointsVo;
 import com.multitap.payment.api.vo.SessionPaymentVo;
-import com.multitap.payment.api.vo.SettlePointsVo;
+import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
+import com.multitap.payment.api.vo.in.KakaoPayRequestVo;
+import com.multitap.payment.api.vo.out.KakaoPayResponseVo;
 import com.multitap.payment.common.entity.BaseResponse;
 import com.multitap.payment.common.entity.BaseResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,11 +91,11 @@ public class PaymentController {
         + " 2차 인증이 진행된 이후 요청할 수 있습니다.")
     @PostMapping("/settle")
     public BaseResponse<Void> settlePoints(
-        @RequestBody SettlePointsVo settlePointVo
+        @RequestBody ExchangePointsVo settlePointVo
     ) {
         log.info("start of settlePoints");
 
-        if (!settlePointsService.settlePoints(SettlePointsDto.of(settlePointVo))) {
+        if (!settlePointsService.settlePoints(ExchangePointsDto.of(settlePointVo))) {
             return new BaseResponse<>(BaseResponseStatus.POINT_UPDATE_FAILED);
         }
         return new BaseResponse<>();
@@ -130,7 +130,7 @@ public class PaymentController {
         log.info("start of redirectPage");
         settlePointsService.deleteRandomNumber(userUuid);
         settlePointsService.deleteVerifiedUser(userUuid);
-        
+
     }
 
 
