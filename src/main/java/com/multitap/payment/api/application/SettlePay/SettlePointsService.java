@@ -23,4 +23,12 @@ public interface SettlePointsService {
     void deleteVerifiedUser(String userUuid);
 
     ExchangeDto getExchange(String startDate, String endDate, String mentorUuid);
+
+    void sendRandomNumber(String userUuid);
+
+    Boolean checkRandomNumber(String userUuid, String insertedNumber);
+
+    void deleteRandomNumber(String userUuid);
+
+    void deleteVerifiedUser(String userUuid);
 }
