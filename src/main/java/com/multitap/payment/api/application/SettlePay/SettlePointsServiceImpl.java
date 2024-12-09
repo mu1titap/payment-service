@@ -23,16 +23,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Log4j2
@@ -147,7 +149,49 @@ public class SettlePointsServiceImpl implements SettlePointsService {
             .build();
         }
 
+<<<<<<< HEAD
         @Override
+=======
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public VoltHistoryDto getVoltHistory(String mentorUuid) {
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.Direction.);
+
+        // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
+        List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMenteeUuid(
+                mentorUuid)
+            .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_POINT_HISTORY));
+
+        Integer voltAmount = 0;
+        for (VoltHistory voltHistory : voltHistoryList) {
+            voltAmount += voltHistory.getVolt();
+        }
+
+        List<VoltResponse> voltResponseList =
+            new ArrayList<>(voltHistoryList.stream().map(voltHistory ->
+                    VoltResponse.builder()
+                        .id(voltHistory.getId())
+                        .volt(voltHistory.getVolt())
+                        .date(voltHistory.getCreatedAt())
+                        .sender(voltHistory.getMenteeUuid())
+                        .build())
+                .toList());
+
+        // 어떤 기준으로 정렬하는지 협업하는 입장에서 찾아들어가봐야 할 수 있다
+//        Collections.reverse(voltResponseList);
+
+        VoltHistoryDto voltHistoryDto = new VoltHistoryDto();
+        voltHistoryDto.setVoltResponse(voltAmount, voltResponseList);
+
+        return voltHistoryDto;
+
+    }
+
+
+    @Override
+>>>>>>> 67f33dd (temp:temp)
     public void deleteRandomNumber(String userUuid) {
         String authKey = userUuid + "-authNum";
         redisTemplate.delete(authKey);

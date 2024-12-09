@@ -3,6 +3,7 @@ package com.multitap.payment.api.infrastructure;
 import com.multitap.payment.api.domain.VoltHistory;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VoltHistoryRepository extends JpaRepository<VoltHistory, Long> {
@@ -11,4 +12,7 @@ public interface VoltHistoryRepository extends JpaRepository<VoltHistory, Long> 
 
     Optional<List<VoltHistory>> findByMenteeUuid(String uuid);
 
+    // 데이터는 데이터 계층에서 처리하는
+    Optional<List<VoltHistory>> findByMenteeUuid(String uuid,
+        Pageable pageable);
 }
