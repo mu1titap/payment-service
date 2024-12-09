@@ -27,8 +27,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -164,7 +162,6 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     @Transactional(readOnly = true)
     @Override
     public VoltHistoryDto getVoltHistory(String mentorUuid) {
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.Direction.);
 
         // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
         List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMenteeUuid(

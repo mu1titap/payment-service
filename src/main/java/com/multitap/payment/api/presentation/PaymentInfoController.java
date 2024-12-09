@@ -59,9 +59,7 @@ public class PaymentInfoController {
         description = "date(연,월,일), 포인트, isPayment(True or False) 로 반환합니다.")
     @GetMapping("/points/history")
     public BaseResponse<List<PointHistoryResponseDto>> getPointHistory(
-        @RequestHeader("menteeUuid") String menteeUuid,
-        @RequestParam(value = "size", defaultValue = "10") Integer pageSize,
-        @RequestParam(value = "page", defaultValue = "0") Integer page
+        @RequestHeader("menteeUuid") String menteeUuid
     ) {
         log.info("start of getPointHistory");
 
