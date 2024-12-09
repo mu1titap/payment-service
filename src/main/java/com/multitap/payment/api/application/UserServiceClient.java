@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 // serviceClient 변경 시 git ignore 주석 하고 push하기
-@FeignClient(name = "member-service", url = "${auth-service.base-url}"
+@FeignClient(name = "member-service", url = "${member-service.base-url}"
     , configuration = TestDecoderConfig.class)
 public interface UserServiceClient {
 
