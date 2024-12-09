@@ -23,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -96,7 +95,6 @@ public class KakaoPayServiceImpl implements KakaoPayService {
     }
 
     @Override
-    @Transactional
     public KakaoPayApproveResponseDto kakaoPayApprove(
         String pgToken) {
 
