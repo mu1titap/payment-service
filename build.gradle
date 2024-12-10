@@ -40,8 +40,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'io.lettuce.core:lettuce-core'
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
     compileOnly 'org.projectlombok:lombok'
@@ -52,6 +54,9 @@ dependencies {
 
     // junit test
     testImplementation 'junit:junit:4.13.2'
+
+
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 
     // jackson
     implementation 'io.github.openfeign:feign-jackson:12.5'
