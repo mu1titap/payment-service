@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +23,9 @@ public class PointHistoryServiceImpl implements PointHistoryService {
     public List<PaymentResponseDto> getPointHistory(String menteeUuid, Integer size,
         Integer page) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        // paging 기능은 native query가 자동으로 처리 가능
+        // 정렬은 명시적으로 추가해야 함
+        Pageable pageable = PageRequest.of(page, size);
 
         return paymentInfoRepository.getPaymentInfo(menteeUuid, pageable);
 
