@@ -20,7 +20,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-// native query to dto 위해
+// native query 사용(unionAll 지원) + dto mapping 위해
 @NamedNativeQuery(
     name = "payment_info_dto",
     query = " SELECT p.volt, p.created_at AS createdAt, 'payment_info' AS sourceTable "

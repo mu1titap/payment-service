@@ -6,6 +6,7 @@ import com.multitap.payment.api.infrastructure.PaymentResponseDtoRepository;
 import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,26 +21,10 @@ public class PointHistoryServiceImpl implements PointHistoryService {
     @Override
     public List<PaymentResponseDto> getPointHistory(String menteeUuid, Integer size,
         Integer page) {
-//        ArrayList<PointHistoryResponseDto> arrayList = new ArrayList<>();
-//
-//        paymentInfoRepository.findByMenteeUuid(menteeUuid).get().forEach(paymentInfo ->
-//            arrayList.add(PointHistoryResponseDto.builder()
-//                .point(paymentInfo.getVolt())
-//                .date(paymentInfo.getCreatedAt())
-//                .isPayment(true)
-//                .build()));
-//
-//        voltHistoryRepository.findByMenteeUuid(menteeUuid).get().forEach(voltHistory ->
-//            arrayList.add(PointHistoryResponseDto.builder()
-//                .point(voltHistory.getVolt())
-//                .date(voltHistory.getCreatedAt())
-//                .isPayment(false)
-//                .build()));
-//
-//        Collections.reverse(arrayList);
-        return paymentInfoRepository.getPaymentInfo(menteeUuid);
 
-//        return arrayList;
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        return paymentInfoRepository.getPaymentInfo(menteeUuid, pageable);
+
     }
 
 }
