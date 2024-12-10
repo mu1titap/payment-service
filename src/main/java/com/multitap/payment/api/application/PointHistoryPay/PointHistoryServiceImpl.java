@@ -35,7 +35,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
         String sortDirection = criteria == null ? "DESC" :  // criteria가 null이면 DESC로 처리
             criteria.equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 
-        return paymentInfoRepository.getPaymentInfo(menteeUuid, pageable, sortDirection);
+        return paymentInfoRepository.getPaymentInfo(menteeUuid, sortDirection, pageable);
 
     }
 
