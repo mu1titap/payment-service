@@ -30,7 +30,8 @@ import lombok.NoArgsConstructor;
         + " SELECT v.volt, v.created_at AS createdAt, 'volt_history' AS sourceTable "
         + " FROM volt_history v "
         + " WHERE v.mentee_uuid = :menteeUuid"
-        + " ORDER BY createdAt DESC ", // order by > limit 순서
+        + " ORDER BY CASE WHEN :criteria = 'DESC' THEN createdAt END DESC," // order by > limit 순서
+        + "          CASE WHEN :criteria = 'ASC' THEN  createdAt END ASC",  // case 별 다른 정렬 기준
     resultSetMapping = "payment_info_dto"
 )
 @SqlResultSetMapping(

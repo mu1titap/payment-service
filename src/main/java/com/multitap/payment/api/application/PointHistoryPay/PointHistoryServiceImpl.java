@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,13 +22,20 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 
     @Override
     public List<PaymentResponseDto> getPointHistory(String menteeUuid, Integer size,
-        Integer page) {
+        Integer page, String criteria) {    // 매개변수 재할당은 지양해야 한다
 
         // paging 기능은 native query가 자동으로 처리 가능
-        // 정렬은 명시적으로 추가해야 함
+        // 정렬은 JPA가 자동으로 처리 불가
+        // 정렬은 명시적으로 추가 x -> native Query에서 동적으로 처리하면 " " 감싸져서 "DESC" 되어 버림
+        // Sort 객체 생성
+        Sort.Direction direction = Sort.Direction.fromString(criteria.toUpperCase());
+        // Pageable 객체 생성
         Pageable pageable = PageRequest.of(page, size);
 
-        return paymentInfoRepository.getPaymentInfo(menteeUuid, pageable);
+        String sortDirection = criteria == null ? "DESC" :  // criteria가 null이면 DESC로 처리
+            criteria.equalsIgnoreCase("ASC") ? "ASC" : "DESC";
+
+        return paymentInfoRepository.getPaymentInfo(menteeUuid, pageable, sortDirection);
 
     }
 

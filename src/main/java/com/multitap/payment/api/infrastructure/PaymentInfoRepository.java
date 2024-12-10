@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PaymentInfoRepository extends JpaRepository<PaymentInfoEntity, Long> {
-    
+
 
     @Query(name = "payment_info_dto", nativeQuery = true)
     List<PaymentResponseDto> getPaymentInfo(@Param("menteeUuid") String menteeUuid,
-        Pageable pageable);
+        Pageable pageable, @Param("criteria") String criteria);
 }

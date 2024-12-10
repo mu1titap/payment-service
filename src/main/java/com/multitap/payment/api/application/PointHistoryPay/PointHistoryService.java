@@ -7,7 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public interface PointHistoryService {
 
-    List<PaymentResponseDto> getPointHistory(String menteeUuid, Integer size, Integer page);
+    List<PaymentResponseDto> getPointHistory(String menteeUuid, Integer size, Integer page,
+        String criteria);
 
 
 }
