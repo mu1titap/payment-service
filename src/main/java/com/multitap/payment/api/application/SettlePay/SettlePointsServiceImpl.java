@@ -1,6 +1,7 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.SettlePay;
 
 
+import com.multitap.payment.api.application.UserServiceClient;
 import com.multitap.payment.api.common.PointConstants;
 import com.multitap.payment.api.domain.Exchange;
 import com.multitap.payment.api.domain.VoltHistory;

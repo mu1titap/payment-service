@@ -22,13 +22,13 @@ public class KakaoPayRequestDto {
     private String partnerOrderId;
 
     private String partnerUserId;
-
+    @Schema(defaultValue = "VOLT")
     private String itemName;
-
+    @Schema(defaultValue = "151")
     private Integer quantity;
-
+    @Schema(defaultValue = "TC0ONETIME")
     private Integer totalAmount;
-
+    @Schema(defaultValue = "0")
     private Integer taxFreeAmount;
 
     private String approvalUrl;

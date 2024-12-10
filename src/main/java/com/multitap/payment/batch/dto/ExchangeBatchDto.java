@@ -1,8 +1,8 @@
 package com.multitap.payment.batch.dto;
 
-import com.multitap.payment.api.domain.BankCode;
+import com.multitap.payment.api.common.enums.BankCode;
+import com.multitap.payment.api.common.enums.ExchangeStatus;
 import com.multitap.payment.api.domain.Exchange;
-import com.multitap.payment.api.domain.ExchangeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
