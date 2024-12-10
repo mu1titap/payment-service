@@ -43,6 +43,7 @@ public class SessionPaymentServiceImpl implements SessionPaymentService {
             .menteeUuid(sessionPaymentDto.getMenteeUuid())
             .mentorUuid(sessionPaymentDto.getMentorUuid())
             .volt(sessionPaymentDto.getVolt())
+            .mentoringName(sessionPaymentDto.getMentoringName())
             .build());
 
 
