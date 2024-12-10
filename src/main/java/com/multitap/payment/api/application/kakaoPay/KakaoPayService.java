@@ -1,17 +1,18 @@
-package com.multitap.payment.api.application;
+package com.multitap.payment.api.application.kakaoPay;
 
 import com.multitap.payment.api.dto.in.KakaoPayRequestDto;
-import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.KakaoPayApproveResponseDto;
 import com.multitap.payment.api.dto.out.KakaoPayResponseDto;
-import com.multitap.payment.api.vo.in.KakaoPayApproveRequestVo;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 public interface KakaoPayService {
 
+    @Transactional
     KakaoPayResponseDto kakaoPayReady(KakaoPayRequestDto kakaoPayRequestDto);
 
+    @Transactional
     KakaoPayApproveResponseDto kakaoPayApprove(String pgToken);
 
-
-    void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo);
+//    void addPoint(UserReqDto userReqDto, KakaoPayApproveRequestVo kakaoPayApproveRequestVo);
 }

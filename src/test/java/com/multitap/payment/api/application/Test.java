@@ -2,7 +2,8 @@ package com.multitap.payment.api.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.multitap.payment.api.domain.BankCode;
+import com.multitap.payment.api.application.SettlePay.SettlePointsService;
+import com.multitap.payment.api.common.enums.BankCode;
 import com.multitap.payment.api.dto.in.ExchangePointsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
