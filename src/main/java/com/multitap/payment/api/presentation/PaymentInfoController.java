@@ -3,7 +3,7 @@ package com.multitap.payment.api.presentation;
 import com.multitap.payment.api.application.PointHistoryPay.PointHistoryService;
 import com.multitap.payment.api.application.SettlePay.SettlePointsService;
 import com.multitap.payment.api.dto.out.ExchangeDto;
-import com.multitap.payment.api.dto.out.PointHistoryResponseDto;
+import com.multitap.payment.api.dto.out.PaymentResponseDto;
 import com.multitap.payment.api.dto.out.VoltHistoryDto;
 import com.multitap.payment.common.entity.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,14 +55,20 @@ public class PaymentInfoController {
     }
 
     @Operation(summary = "멘티의 결제 or 충전 내역 반환 ", tags = "포인트 내역",
-        description = "date(연,월,일), 포인트, isPayment(True or False) 로 반환합니다.")
+        description = "date(연,월,일), 포인트, source_table(volt_history , payment_info) 로 반환합니다."
+            + " size , page , criteria(DESC(default), ASC) 로 pagination 처리합니다.")
     @GetMapping("/points/history")
-    public BaseResponse<List<PointHistoryResponseDto>> getPointHistory(
-        @RequestParam("menteeUuid") String menteeUuid
+    public BaseResponse<List<PaymentResponseDto>> getPointHistory(
+        @RequestParam("menteeUuid") String menteeUuid,
+        @RequestParam("size") Integer size,
+        @RequestParam("page") Integer page,
+        @RequestParam(value = "criteria", defaultValue = "DESC", required = false) String criteria
+
     ) {
         log.info("start of getPointHistory");
 
-        return new BaseResponse<>(pointHistoryService.getPointHistory(menteeUuid));
+        return new BaseResponse<>(
+            pointHistoryService.getPointHistory(menteeUuid, size, page, criteria));
     }
 
 
