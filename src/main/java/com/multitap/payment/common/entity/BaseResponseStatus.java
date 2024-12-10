@@ -67,7 +67,7 @@ public enum BaseResponseStatus {
     PAYMENT_PROCESS_ERROR(HttpStatus.CONFLICT, false, 409, "결제 정보 처리를 실패하였습니다."),
     UNKNOWN_USER_POINT_RESTORE_ERROR(HttpStatus.CONFLICT, false, 409, "유저 포인트 정보 복구를 실패하였습니다."),
     NOT_ENOUGH_POINT(HttpStatus.BAD_REQUEST, false, 3006, "보유 포인트가 부족합니다."),
-
+    NO_EXIST_POINT_HISTORY(HttpStatus.NOT_FOUND, false, 3007, "존재하지 않는 포인트 내역입니다."),
 
     // Shorts
     NO_EXIST_PRODUCT(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 상품입니다"),
@@ -79,7 +79,7 @@ public enum BaseResponseStatus {
     NO_DELETE_RE_COMMENT_AUTHORITY(HttpStatus.BAD_REQUEST, false, 403, "대댓글 삭제 권한이 없습니다"),
     NO_EXIST_RE_COMMENT(HttpStatus.NOT_FOUND, false, 404, "존재하지 않는 대댓글입니다"),
     NO_EXIST_PIN_AUTHORITY(HttpStatus.BAD_REQUEST, false, 403, "고정 권한이 없습니다"),
-    
+
 
     // Notification
     NO_EXIST_NOTIFICATION_SETTING(HttpStatus.NOT_FOUND, false, 404, "유저의 알림 설정이 존재하지 않습니다."),
