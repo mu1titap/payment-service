@@ -16,6 +16,7 @@ public class SessionPaymentDto {
     private String menteeUuid;
     private String mentorUuid;
     private Integer volt;
+    private String mentoringName;
 
 
     public static SessionPaymentDto from(SessionPaymentVo sessionPaymentVo) {
