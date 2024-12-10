@@ -55,7 +55,7 @@ public class PaymentInfoController {
     }
 
     @Operation(summary = "멘티의 결제 or 충전 내역 반환 ", tags = "포인트 내역",
-        description = "date(연,월,일), 포인트, isPayment(True or False) 로 반환합니다.")
+        description = "date(연,월,일), 포인트, source_table(volt_history,payment_info) 로 반환합니다.")
     @GetMapping("/points/history")
     public BaseResponse<List<PaymentResponseDto>> getPointHistory(
         @RequestParam("menteeUuid") String menteeUuid,
