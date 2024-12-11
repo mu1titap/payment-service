@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +48,7 @@ public class PaymentInfoController {
     public BaseResponse<ExchangeDto> getPointsBetweenDates(
         @RequestParam(value = "startDate", required = false) String startDate,
         @RequestParam(value = "endDate", required = false) String endDate,
-        @RequestHeader(value = "mentorUuid", required = true) String mentorUuid
+        @RequestParam(value = "mentorUuid", required = true) String mentorUuid
     ) {
         log.info("start of getPointsBetweenDates");
         return new BaseResponse<>(settlePointsService.getExchange(startDate, endDate, mentorUuid));
