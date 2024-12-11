@@ -13,9 +13,9 @@ public interface SettlePointsService {
     @Transactional
     Boolean settlePoints(ExchangePointsDto settlePointsDto);
 
-    void sendRandomNumber(String userUuid);
 
     VoltHistoryDto getVoltHistory(String mentorUuid);
+
     Boolean checkRandomNumber(String userUuid, String insertedNumber);
 
     void deleteRandomNumber(String userUuid);
@@ -26,9 +26,5 @@ public interface SettlePointsService {
 
     void sendRandomNumber(String userUuid);
 
-    Boolean checkRandomNumber(String userUuid, String insertedNumber);
 
-    void deleteRandomNumber(String userUuid);
-
-    void deleteVerifiedUser(String userUuid);
 }
