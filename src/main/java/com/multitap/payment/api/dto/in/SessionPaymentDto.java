@@ -26,6 +26,7 @@ public class SessionPaymentDto {
             .menteeUuid(sessionPaymentVo.getMenteeUuid())
             .mentorUuid(sessionPaymentVo.getMentorUuid())
             .volt(sessionPaymentVo.getVolt())
+            .mentoringName(sessionPaymentVo.getMentoringName())
             .nickName(sessionPaymentVo.getNickName())
             .build();
     }
