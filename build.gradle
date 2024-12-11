@@ -61,6 +61,8 @@ dependencies {
     // jackson
     implementation 'io.github.openfeign:feign-jackson:12.5'
 
+    // json object
+    
 }
 
 dependencyManagement {
@@ -68,6 +70,7 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
