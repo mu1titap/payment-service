@@ -27,7 +27,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -54,8 +53,6 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
     @Override
     public Boolean settlePoints(ExchangePointsDto exchangePointsDto) {
-        // todo 인증 성공 시 되도록 인증 요청 api 따로 만들기
-        // todo jwt/redis 에 정보 담기
         BaseResponse<Boolean> response =
             userServiceClient.usePoints(exchangePointsDto.getMentorUuid(),
                 exchangePointsDto.getPoints());
@@ -78,8 +75,18 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     @Override
     public ExchangeDto getExchange(String startDate, String endDate, String mentorUuid) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate startLocalDate = LocalDate.parse(startDate, formatter);
-        LocalDate endLocalDate = LocalDate.parse(endDate, formatter);
+        LocalDate startLocalDate;
+        LocalDate endLocalDate;
+        // 값이 안 들어올 경우 처리
+        if (startDate == null || endDate == null) {
+            // 오늘 부터 한 달 전으로
+            endLocalDate = LocalDate.now();
+            startLocalDate = LocalDate.now().minusMonths(1);
+
+        } else {
+            startLocalDate = LocalDate.parse(startDate, formatter);
+            endLocalDate = LocalDate.parse(endDate, formatter);
+        }
 
         LocalDateTime startDateTime = startLocalDate.atStartOfDay();
         LocalDateTime endDateTime = endLocalDate.atTime(23, 59, 59);
@@ -134,6 +141,7 @@ public class SettlePointsServiceImpl implements SettlePointsService {
         javaMailSender.send(message);
 
         // save redis
+        // 유저에 해당하는 인증번호용 redis에 저장
         String authKey = userUuid + "-authNum";
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(authKey, randomNumber, 180, java.util.concurrent.TimeUnit.SECONDS);
@@ -142,10 +150,14 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
     @Override
     public Boolean checkRandomNumber(String userUuid, String insertedNumber) {
-
+        log.info("userUuid: {}, insertedNumber: {}", userUuid, insertedNumber);
         String authKey = userUuid + "-authNum";
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(authKey);
+
+        if (value == null) { // 여러 번 요청해서 redis에서 value가 사라진 case.. 고려
+            return false;
+        }
 
         ListOperations<String, String> valueOperationList = redisTemplate.opsForList();
         if (value.equals(insertedNumber)) {
@@ -163,7 +175,6 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     @Transactional(readOnly = true)
     @Override
     public VoltHistoryDto getVoltHistory(String mentorUuid) {
-        PageRequest pageRequest = PageRequest.of(0, 10);
 
         // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
         List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMenteeUuid(

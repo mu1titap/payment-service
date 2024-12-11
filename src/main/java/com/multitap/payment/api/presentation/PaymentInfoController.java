@@ -3,11 +3,10 @@ package com.multitap.payment.api.presentation;
 import com.multitap.payment.api.application.PointHistoryPay.PointHistoryService;
 import com.multitap.payment.api.application.SettlePay.SettlePointsService;
 import com.multitap.payment.api.dto.out.ExchangeDto;
-import com.multitap.payment.api.dto.out.PointHistoryResponseDto;
+import com.multitap.payment.api.dto.out.PaymentResponseMapDto;
 import com.multitap.payment.api.dto.out.VoltHistoryDto;
 import com.multitap.payment.common.entity.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +43,8 @@ public class PaymentInfoController {
             + "날짜 형식 : 20240101 (8자리) <br>"
             + "- money의 경우 현재 1volt 당 100원 <br>"
             + "수수료 10%로 계산하여 반환합니다. <br>"
-            + "- 정산 status는 PROCEEDING, COMPLETED 두 가지 상태로 관리됩니다.")
+            + "- 정산 status는 PROCEEDING, COMPLETED 두 가지 상태로 관리됩니다.<br>"
+            + " startDate, endDate 둘 중 하나라도 null이 입력되면 입력 시간 기준 한달 전을 범위로 잡습니다.")
     @GetMapping("/settle/points")
     public BaseResponse<ExchangeDto> getPointsBetweenDates(
         @RequestParam(value = "startDate", required = false) String startDate,
@@ -56,14 +56,21 @@ public class PaymentInfoController {
     }
 
     @Operation(summary = "멘티의 결제 or 충전 내역 반환 ", tags = "포인트 내역",
-        description = "date(연,월,일), 포인트, isPayment(True or False) 로 반환합니다.")
+        description = "date(연,월,일), 포인트, source_table(volt_history , payment_info) 로 반환합니다.<br>"
+            + " size , page , criteria(DESC(default), ASC) 로 pagination 처리합니다. <br>"
+            + " page 는 0부터 시작합니다.")
     @GetMapping("/points/history")
-    public BaseResponse<List<PointHistoryResponseDto>> getPointHistory(
-        @RequestHeader("menteeUuid") String menteeUuid
+    public BaseResponse<PaymentResponseMapDto> getPointHistory(
+        @RequestParam("menteeUuid") String menteeUuid,
+        @RequestParam("size") Integer size,
+        @RequestParam("page") Integer page,
+        @RequestParam(value = "criteria", defaultValue = "DESC", required = false) String criteria
+
     ) {
         log.info("start of getPointHistory");
 
-        return new BaseResponse<>(pointHistoryService.getPointHistory(menteeUuid));
+        return new BaseResponse<>(
+            pointHistoryService.getPointHistory(menteeUuid, size, page, criteria));
     }
 
 
