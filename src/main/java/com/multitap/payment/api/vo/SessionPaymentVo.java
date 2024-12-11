@@ -12,6 +12,6 @@ public class SessionPaymentVo {
     private String mentorUuid;
     private Integer volt;
     private String mentoringName;
-    private String nickName;
+    private String nickname;
 
 }
