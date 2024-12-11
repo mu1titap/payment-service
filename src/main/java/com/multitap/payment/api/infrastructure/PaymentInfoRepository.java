@@ -19,4 +19,7 @@ public interface PaymentInfoRepository extends JpaRepository<PaymentInfoEntity, 
     List<PaymentResponseDto> getPaymentInfo(@Param("menteeUuid") String menteeUuid,
         @Param("criteria") String criteria,
         Pageable pageable);
+
+    @Query(name = "payment_info_count", nativeQuery = true)
+    Integer getPaymentInfoCount(@Param("menteeUuid") String menteeUuid);
 }
