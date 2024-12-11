@@ -45,6 +45,17 @@ import lombok.NoArgsConstructor;
         }
     )
 )
+@NamedNativeQuery(
+    name = "payment_info_count",
+    query = "SELECT COUNT(*) FROM ( "
+        + "SELECT 1 "
+        + " FROM payment_info p "
+        + " WHERE p.mentee_uuid = :menteeUuid "
+        + " UNION ALL "
+        + " SELECT 1 "
+        + " FROM volt_history v "
+        + " WHERE v.mentee_uuid = :menteeUuid ) AS combined_data"
+)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

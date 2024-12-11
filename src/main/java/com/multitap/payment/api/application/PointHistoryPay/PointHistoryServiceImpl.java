@@ -1,9 +1,9 @@
 package com.multitap.payment.api.application.PointHistoryPay;
 
-import com.multitap.payment.api.dto.out.PaymentResponseDto;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import java.util.List;
+import com.multitap.payment.api.vo.out.PaymentResponseMapDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PointHistoryServiceImpl implements PointHistoryService {
 
     private final PaymentInfoRepository paymentInfoRepository;
 
 
     @Override
-    public List<PaymentResponseDto> getPointHistory(String menteeUuid, Integer size,
+    public PaymentResponseMapDto getPointHistory(String menteeUuid, Integer size,
         Integer page, String criteria) {    // 매개변수 재할당은 지양해야 한다
 
         // paging 기능은 native query가 자동으로 처리 가능
@@ -31,7 +32,12 @@ public class PointHistoryServiceImpl implements PointHistoryService {
         String sortDirection = criteria == null ? "DESC" :  // criteria가 null이면 DESC로 처리
             criteria.equalsIgnoreCase("ASC") ? "ASC" : "DESC";
 
-        return paymentInfoRepository.getPaymentInfo(menteeUuid, sortDirection, pageable);
+        Integer counts = paymentInfoRepository.getPaymentInfoCount(menteeUuid);
+        Integer toalPage = (int) Math.ceil((double) counts / size);    // 페이지 수 올림
+        log.info("counts {}", counts);
+
+        return new PaymentResponseMapDto(toalPage,
+            paymentInfoRepository.getPaymentInfo(menteeUuid, sortDirection, pageable));
 
     }
 

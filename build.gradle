@@ -55,6 +55,9 @@ dependencies {
 
     // jackson
     implementation 'io.github.openfeign:feign-jackson:12.5'
+
+    // json object
+    
 }
 
 dependencyManagement {
