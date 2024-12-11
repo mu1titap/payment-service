@@ -2,8 +2,6 @@ package com.multitap.payment.api.application.PointHistoryPay;
 
 import com.multitap.payment.api.dto.out.PaymentResponseDto;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.infrastructure.PaymentResponseDtoRepository;
-import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -16,8 +14,6 @@ import org.springframework.stereotype.Service;
 public class PointHistoryServiceImpl implements PointHistoryService {
 
     private final PaymentInfoRepository paymentInfoRepository;
-    private final VoltHistoryRepository voltHistoryRepository;
-    private final PaymentResponseDtoRepository paymentResponseDtoRepository;
 
 
     @Override
