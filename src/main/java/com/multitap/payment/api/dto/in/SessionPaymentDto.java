@@ -17,6 +17,7 @@ public class SessionPaymentDto {
     private String mentorUuid;
     private Integer volt;
     private String mentoringName;
+    private String nickName;
 
 
     public static SessionPaymentDto from(SessionPaymentVo sessionPaymentVo) {
@@ -25,6 +26,7 @@ public class SessionPaymentDto {
             .menteeUuid(sessionPaymentVo.getMenteeUuid())
             .mentorUuid(sessionPaymentVo.getMentorUuid())
             .volt(sessionPaymentVo.getVolt())
+            .nickName(sessionPaymentVo.getNickName())
             .build();
     }
 
