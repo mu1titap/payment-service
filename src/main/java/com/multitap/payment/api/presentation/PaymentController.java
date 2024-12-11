@@ -82,7 +82,8 @@ public class PaymentController {
         + "KOREA_KB : KB은행 <br>"
         + "KOREA_HANA : 하나은행 <br>"
         + "KOREA_IBK : IBK 은행 <br>"
-        + "KOREA_NH_BANK : 농협은행")
+        + "KOREA_NH_BANK : 농협은행 <br>"
+        + " 2차 인증이 진행된 이후 요청할 수 있습니다.")
     @PostMapping("/settle")
     public BaseResponse<Void> settlePoints(
         @RequestBody ExchangePointsVo settlePointVo
@@ -93,6 +94,62 @@ public class PaymentController {
             return new BaseResponse<>(BaseResponseStatus.POINT_UPDATE_FAILED);
         }
         return new BaseResponse<>();
+    }
+
+    @Operation(summary = "2차 인증 번호 발송", tags = "2차인증", description = "추가 인증을 위한 인증번호를 발송합니다 <br>")
+    @PostMapping("/settle/send/random-number")
+    public BaseResponse<Void> sendRandomNumber(
+        @RequestParam("userUuid") String userUuid
+    ) {
+        log.info("start of sendRandomNum");
+
+        settlePointsService.sendRandomNumber(userUuid);
+
+        return new BaseResponse<>();
+    }
+
+    @Operation(summary = "2차 인증 번호 동일 여부 확인", tags = "2차인증", description = "발송한 인증번호와 일치하는지 확인합니다. <br>")
+    @PostMapping("/settle/check/random-number")
+    public BaseResponse<Boolean> checkNumber(@RequestParam("userUuid") String userUuid,
+        @RequestParam("insertedNumber") String insertedNumber
+    ) {
+        log.info("start of checkNum");
+
+        return new BaseResponse<>(settlePointsService.checkRandomNumber(userUuid, insertedNumber));
+    }
+
+//    private final RedisTemplate<String, String> redisTemplate;
+//
+//    @PostMapping("/redisTest")
+//    public ResponseEntity<?> addRedisKey(@RequestBody ViewInfoModel vo) {
+//        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+//        log.info("vo: {}", vo.toString());
+//        valueOperations.set(vo.getCallId(), vo.getOpenedAt());
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
+//
+//    @GetMapping("/redisTest/{key}")
+//    public ResponseEntity<?> getRedisKey(@PathVariable("key") String key) {
+//        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+//        String value = valueOperations.get(key);
+//        return new ResponseEntity<>(value, HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/redisTest/check/{key}")
+//    public ResponseEntity<Boolean> checkRandNum(@RequestParam("phoneNumber") String phoneNumber,
+//        @RequestParam("insertedNumber") String insertedNumber) {
+//        return new ResponseEntity<>(
+//            settlePointsService.checkRandomNumber(phoneNumber, insertedNumber), HttpStatus.OK);
+//    }
+
+    @Operation(summary = "정산 페이지 이동 시 요청", tags = "2차인증", description = "random 번호 및 인증된 회원 목록을 redis에서 삭제합니다. <br>")
+    @PostMapping("/settle/redirect-page")
+    public void redirectPage(@RequestParam("userUuid") String userUuid
+    ) {
+        log.info("start of redirectPage");
+        settlePointsService.deleteRandomNumber(userUuid);
+        settlePointsService.deleteVerifiedUser(userUuid);
+
     }
 
 
