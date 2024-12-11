@@ -23,18 +23,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Log4j2
@@ -47,10 +45,13 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     private final AuthServiceClient authServiceClient;
     private final JavaMailSender javaMailSender;
     private final RedisTemplate<String, String> redisTemplate;
+    private final VoltHistoryRepository voltHistoryRepository;
+    private final ExchangeRepository exchangeRepository;
 
 
     @Value("${spring.mail.username}")
     private String senderEmail;
+
 
     @Override
     public Boolean settlePoints(ExchangePointsDto exchangePointsDto) {
@@ -59,7 +60,6 @@ public class SettlePointsServiceImpl implements SettlePointsService {
         BaseResponse<Boolean> response =
             userServiceClient.usePoints(exchangePointsDto.getMentorUuid(),
                 exchangePointsDto.getPoints());
-
         if (!response.result()) {
             log.error("Failed to settle points. mentorUuid: {}, points: {}",
                 exchangePointsDto.getMentorUuid(), exchangePointsDto.getPoints());
@@ -75,41 +75,6 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
         return true;
     }
-
-    @Override
-    public VoltHistoryDto getVoltHistory(String mentorUuid) {
-        // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
-        List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMentorUuid(mentorUuid);
-        if (voltHistoryList.isEmpty()) {
-            return null;
-        }
-
-        Integer voltAmount = 0;
-        for (VoltHistory voltHistory : voltHistoryList) {
-            voltAmount += voltHistory.getVolt();
-        }
-
-        VoltHistoryDto voltHistoryDto = new VoltHistoryDto();
-
-        List<VoltResponse> voltResponseList =
-            new ArrayList<>(voltHistoryList.stream().map(voltHistory ->
-                    VoltResponse.builder()
-                        .id(voltHistory.getId())
-                        .volt(voltHistory.getVolt())
-                        .date(voltHistory.getCreatedAt())
-                        .sender(voltHistory.getMenteeUuid())
-                        .build())
-                .toList());
-
-        Collections.reverse(voltResponseList);
-
-        voltHistoryDto.setVoltResponse(voltAmount, voltResponseList);
-
-        return voltHistoryDto;
-
-
-    }
-
 
     @Override
     public ExchangeDto getExchange(String startDate, String endDate, String mentorUuid) {
@@ -147,27 +112,69 @@ public class SettlePointsServiceImpl implements SettlePointsService {
             .totalExchange(exchangeAmount)
             .exchangeList(exchangePointsDtoList)
             .build();
-        }
 
-<<<<<<< HEAD
-        @Override
-=======
+
     }
 
-    @Transactional(readOnly = true)
+    @Override
+    public void sendRandomNumber(String userUuid) {
+
+        // generate random number
+        Integer numberLength = 6;
+        String randomNumber = RandomNumGenerator.generateRandomNum(numberLength);
+
+        // config content
+        String toEmail = authServiceClient.getUserEmail(userUuid);  // auth service에서 Email 가져오기
+        if (toEmail == null) {
+            throw new BaseException(BaseResponseStatus.NO_EXIST_USER);
+        }
+        MimeMessage message = javaMailSender.createMimeMessage();
+        message = MailConfigurer.configMimeMessage(message, senderEmail, toEmail, randomNumber);
+
+        // send
+        javaMailSender.send(message);
+
+        // save redis
+        String authKey = userUuid + "-authNum";
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(authKey, randomNumber, 180, java.util.concurrent.TimeUnit.SECONDS);
+
+    }
+
+    @Override
+    public Boolean checkRandomNumber(String userUuid, String insertedNumber) {
+
+        String authKey = userUuid + "-authNum";
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(authKey);
+
+        ListOperations<String, String> valueOperationList = redisTemplate.opsForList();
+        if (value.equals(insertedNumber)) {
+            // 맞을 시 redis에서 key 삭제
+            valueOperations.getOperations().delete(authKey);
+            // verfied 된 유저 list에 추가하기
+            valueOperationList.rightPush("verified", userUuid);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     @Override
     public VoltHistoryDto getVoltHistory(String mentorUuid) {
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.Direction.);
-
         // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
-        List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMenteeUuid(
-                mentorUuid)
-            .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_POINT_HISTORY));
+        List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMentorUuid(mentorUuid);
+        if (voltHistoryList.isEmpty()) {
+            return null;
+        }
 
         Integer voltAmount = 0;
         for (VoltHistory voltHistory : voltHistoryList) {
             voltAmount += voltHistory.getVolt();
         }
+
+        VoltHistoryDto voltHistoryDto = new VoltHistoryDto();
 
         List<VoltResponse> voltResponseList =
             new ArrayList<>(voltHistoryList.stream().map(voltHistory ->
@@ -179,10 +186,8 @@ public class SettlePointsServiceImpl implements SettlePointsService {
                         .build())
                 .toList());
 
-        // 어떤 기준으로 정렬하는지 협업하는 입장에서 찾아들어가봐야 할 수 있다
-//        Collections.reverse(voltResponseList);
+        Collections.reverse(voltResponseList);
 
-        VoltHistoryDto voltHistoryDto = new VoltHistoryDto();
         voltHistoryDto.setVoltResponse(voltAmount, voltResponseList);
 
         return voltHistoryDto;
@@ -191,12 +196,11 @@ public class SettlePointsServiceImpl implements SettlePointsService {
 
 
     @Override
->>>>>>> 67f33dd (temp:temp)
     public void deleteRandomNumber(String userUuid) {
         String authKey = userUuid + "-authNum";
         redisTemplate.delete(authKey);
 
-        }
+    }
 
     @Override
     public void deleteVerifiedUser(String userUuid) {
@@ -204,6 +208,6 @@ public class SettlePointsServiceImpl implements SettlePointsService {
         valueOperationList.remove("verified", 0, userUuid);
     }
 
-    }
 
+}
 
