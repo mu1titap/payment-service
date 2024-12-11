@@ -12,5 +12,4 @@ public class PaySessionRequestDto {
     private String mentorUuid;
     private Integer volt;
     private String mentoringName;
-    private String nickname;
 }
