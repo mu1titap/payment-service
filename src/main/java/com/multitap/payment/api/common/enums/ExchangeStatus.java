@@ -1,4 +1,4 @@
-package com.multitap.payment.api.domain.enum_file;
+package com.multitap.payment.api.common.enums;
 
 
 public enum ExchangeStatus {

@@ -1,11 +1,11 @@
-package com.multitap.payment.api.vo;
+package com.multitap.payment.api.dto.out;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
-public class SessionPaymentVo {
+@Builder
+public class PaySessionRequestDto {
 
     private String sessionUuid;
     private String menteeUuid;
@@ -13,5 +13,4 @@ public class SessionPaymentVo {
     private Integer volt;
     private String mentoringName;
     private String nickname;
-
 }

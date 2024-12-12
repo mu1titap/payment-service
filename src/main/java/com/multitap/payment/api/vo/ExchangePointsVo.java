@@ -1,7 +1,6 @@
 package com.multitap.payment.api.vo;
 
-
-import com.multitap.payment.api.domain.enum_file.BankCode;
+import com.multitap.payment.api.common.enums.BankCode;
 import lombok.Getter;
 
 @Getter

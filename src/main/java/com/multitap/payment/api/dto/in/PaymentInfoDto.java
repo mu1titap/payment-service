@@ -1,7 +1,7 @@
 package com.multitap.payment.api.dto.in;
 
+import com.multitap.payment.api.common.enums.PaymentType;
 import com.multitap.payment.api.domain.PaymentInfoEntity;
-import com.multitap.payment.api.domain.enum_file.PaymentType;
 import com.multitap.payment.api.vo.PaymentInfoVo;
 import lombok.Builder;
 import lombok.Getter;

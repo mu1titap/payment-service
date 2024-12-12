@@ -1,3 +1,4 @@
+package com.multitap.payment.api.common.enums;
 
 import java.util.Arrays;
 

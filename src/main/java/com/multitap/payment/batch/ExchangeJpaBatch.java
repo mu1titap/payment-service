@@ -1,7 +1,7 @@
 package com.multitap.payment.batch;
 
+import com.multitap.payment.api.common.enums.ExchangeStatus;
 import com.multitap.payment.api.domain.Exchange;
-import com.multitap.payment.api.domain.enum_file.ExchangeStatus;
 import com.multitap.payment.api.infrastructure.ExchangeRepository;
 import com.multitap.payment.batch.dto.ExchangeBatchDto;
 import java.util.Map;

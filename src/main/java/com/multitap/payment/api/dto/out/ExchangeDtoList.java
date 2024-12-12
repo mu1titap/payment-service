@@ -1,7 +1,6 @@
 package com.multitap.payment.api.dto.out;
 
-
-import com.multitap.payment.api.domain.enum_file.ExchangeStatus;
+import com.multitap.payment.api.common.enums.ExchangeStatus;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
