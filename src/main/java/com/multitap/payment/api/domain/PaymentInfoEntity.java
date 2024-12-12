@@ -1,5 +1,6 @@
 package com.multitap.payment.api.domain;
 
+
 import com.multitap.payment.api.common.enums.PaymentType;
 import com.multitap.payment.api.dto.out.PaymentResponseDto;
 import com.multitap.payment.common.entity.BaseEntity;

@@ -2,6 +2,7 @@ package com.multitap.payment.api.dto.in;
 
 
 import com.multitap.payment.api.domain.VoltHistory;
+import com.multitap.payment.api.domain.enum_file.PaymentStatus;
 import com.multitap.payment.api.vo.SessionPaymentVo;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,7 @@ public class SessionPaymentDto {
             .menteeUuid(menteeUuid)
             .mentorUuid(mentorUuid)
             .volt(volt)
+            .paymentStatus(PaymentStatus.PENDING)
             .build();
 
     }
