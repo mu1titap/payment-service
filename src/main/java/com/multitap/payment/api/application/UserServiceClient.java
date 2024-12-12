@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
     , configuration = TestDecoderConfig.class)
 public interface UserServiceClient {
 
-    @PutMapping("api/v1/member/points/add")
+    @PutMapping("/api/v1/member/points/add")
     BaseResponse<Void> addPoints(@RequestBody UserReqDto userReqDto);
 
-    @PutMapping("api/v1/member/points/use")
+    @PutMapping("/api/v1/member/points/use")
     BaseResponse<Boolean> usePoints(@RequestParam("userUuid") String userUuid,
         @RequestParam("pointPrice") Integer pointPrice);
 
