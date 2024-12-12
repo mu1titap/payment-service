@@ -1,7 +1,7 @@
 package com.multitap.payment.api.application.PointHistoryPay;
 
+import com.multitap.payment.api.dto.out.PaymentResponseMapDto;
 import com.multitap.payment.api.infrastructure.PaymentInfoRepository;
-import com.multitap.payment.api.vo.out.PaymentResponseMapDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,8 +18,8 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 
 
     @Override
-    public PaymentResponseMapDto getPointHistory(String menteeUuid, Integer size,
-        Integer page, String criteria) {    // 매개변수 재할당은 지양해야 한다
+    public PaymentResponseMapDto getPointHistory(String menteeUuid, Integer size, Integer page,
+        String criteria) {    // 매개변수 재할당은 지양해야 한다
 
         // paging 기능은 native query가 자동으로 처리 가능
         // 정렬은 JPA가 자동으로 처리 불가
