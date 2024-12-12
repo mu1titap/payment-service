@@ -3,16 +3,15 @@ package com.multitap.payment.api.application.SessionPay;
 import com.multitap.payment.api.application.UserServiceClient;
 import com.multitap.payment.api.application.kafka.KafkaProducer;
 import com.multitap.payment.api.dto.in.SessionPaymentDto;
-import com.multitap.payment.api.dto.in.UserReqDto;
 import com.multitap.payment.api.dto.out.PaySessionRequestDto;
 import com.multitap.payment.api.infrastructure.VoltHistoryRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class SessionPaymentServiceImpl implements SessionPaymentService {
 
     private final UserServiceClient userServiceClient;
@@ -27,12 +26,12 @@ public class SessionPaymentServiceImpl implements SessionPaymentService {
             sessionPaymentDto.getVolt());
         log.info("here in paySession try");
 
-        // mentor point 증가
-        UserReqDto userReqDto = UserReqDto.builder()
-            .userUuid(sessionPaymentDto.getMentorUuid())
-            .pointQuantity(sessionPaymentDto.getVolt())
-            .build();
-        userServiceClient.addPoints(userReqDto);
+        // mentor point 증가 => 세션 확정 시 증가하도록
+//        UserReqDto userReqDto = UserReqDto.builder()
+//            .userUuid(sessionPaymentDto.getMentorUuid())
+//            .pointQuantity(sessionPaymentDto.getVolt())
+//            .build();
+//        userServiceClient.addPoints(userReqDto);
         // 결제 정보 저장
         log.info("sessionPaymentDto : {}", sessionPaymentDto.toString());
         voltHistoryRepository.save(sessionPaymentDto.toEntity());

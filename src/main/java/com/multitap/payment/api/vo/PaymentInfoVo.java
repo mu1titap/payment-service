@@ -7,7 +7,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class PaymentInfoVo {
-
     private String menteeUuid;
     private Integer volt;
     private PaymentType type;
