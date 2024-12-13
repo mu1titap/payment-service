@@ -27,7 +27,7 @@ public class PaymentInfoController {
 
     @Operation(summary = "멘토가 받은 포인트 값 반환 ", tags = "포인트 정산", description =
         "멘티로 부터 받은 포인트 내역을 반환합니다. <br>"
-            + "참고 DB : voltHistory")
+            + "참고 DB : voltHistory 및 Exchange ")
     @GetMapping("/settle/mentorUuid={mentorUuid}/points")
     public BaseResponse<VoltHistoryDto> getPoints(
         @PathVariable("mentorUuid") String mentorUuid
