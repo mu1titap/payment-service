@@ -176,14 +176,25 @@ public class SettlePointsServiceImpl implements SettlePointsService {
     @Override
     public VoltHistoryDto getVoltHistory(String mentorUuid) {
 
-        // 회원 볼트 결제 내역을 통해 멘토의 볼트 총량을 계산
-        List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMenteeUuid(
-                mentorUuid)
-            .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_POINT_HISTORY));
-
         Integer voltAmount = 0;
-        for (VoltHistory voltHistory : voltHistoryList) {
-            voltAmount += voltHistory.getVolt();
+
+        // 회원 볼트 결제 내역을 통해 멘토가 받은 볼트 총량을 계산
+        List<VoltHistory> voltHistoryList = voltHistoryRepository.findByMentorUuid(
+            mentorUuid);
+        if (voltHistoryList != null) {
+            for (VoltHistory voltHistory : voltHistoryList) {
+                voltAmount += voltHistory.getVolt();
+            }
+        }
+
+        // todo logic 잘못됨.. member service에서 amount를 다 가지고 있어야 함
+        List<Exchange> exchangeList = exchangeRepository.findByMentorUuid(mentorUuid);
+
+        // 환전 한 만큼 총량 마이너스
+        if (exchangeList != null) {
+            for (Exchange exchange : exchangeList) {
+                voltAmount -= exchange.getVolt();
+            }
         }
 
         List<VoltResponse> voltResponseList =

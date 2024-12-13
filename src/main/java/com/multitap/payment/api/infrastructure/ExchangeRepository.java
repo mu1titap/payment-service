@@ -20,4 +20,6 @@ public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
 
     List<Exchange> findByMentorUuidAndCreatedAtBetween(String mentorUuid, LocalDateTime startDate,
         LocalDateTime endDate);
+
+    List<Exchange> findByMentorUuid(String mentorUuid);
 }
