@@ -147,7 +147,7 @@ public class KakaoPayServiceImpl implements KakaoPayService {
             .build();
         paymentInfoRepository.save(paymentInfoDto.toEntity());
         log.info("Payment information saved successfully");
-        log.info("request add user point");
+        log.info("request add user point"); // test
 
         UserReqDto userReqDto = UserReqDto.builder()
             .userUuid(kakaoPayApproveResponseDto.getPartner_user_id())
