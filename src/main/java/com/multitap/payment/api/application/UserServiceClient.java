@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-// serviceClient 변경 시 git ignore 주석 하고 push하기
+// serviceClient 변경 시 git ignore 주석 하고 push하기 //
 @FeignClient(name = "member-service", url = "${member-service.base-url}")
 public interface UserServiceClient {
 
