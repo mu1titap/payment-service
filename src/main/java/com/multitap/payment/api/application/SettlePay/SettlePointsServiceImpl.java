@@ -197,6 +197,8 @@ public class SettlePointsServiceImpl implements SettlePointsService {
             }
         }
 
+        // todo voltAmount 가 마이너스 인 경우 생각
+
         List<VoltResponse> voltResponseList =
             new ArrayList<>(voltHistoryList.stream().map(voltHistory ->
                     VoltResponse.builder()
